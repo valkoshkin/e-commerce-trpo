@@ -11,7 +11,7 @@ import java.util.List;
 @Setter
 @Accessors(chain = true)
 @Entity
-@Table(name = "role")
+@Table(name = "roles")
 public class Role {
 
     @Id

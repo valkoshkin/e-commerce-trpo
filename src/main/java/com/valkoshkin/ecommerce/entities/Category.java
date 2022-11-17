@@ -11,7 +11,7 @@ import java.util.List;
 @Setter
 @Accessors(chain = true)
 @Entity
-@Table(name = "category")
+@Table(name = "categories")
 public class Category {
 
     @Id

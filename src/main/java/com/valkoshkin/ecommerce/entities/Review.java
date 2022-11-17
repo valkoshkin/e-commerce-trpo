@@ -11,7 +11,7 @@ import java.sql.Date;
 @Setter
 @Accessors(chain = true)
 @Entity
-@Table(name = "review")
+@Table(name = "reviews")
 public class Review {
 
     @Id

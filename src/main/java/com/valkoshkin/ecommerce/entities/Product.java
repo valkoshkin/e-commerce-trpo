@@ -11,7 +11,7 @@ import java.util.List;
 @Setter
 @Accessors(chain = true)
 @Entity
-@Table(name = "product")
+@Table(name = "products")
 public class Product {
 
     @Id

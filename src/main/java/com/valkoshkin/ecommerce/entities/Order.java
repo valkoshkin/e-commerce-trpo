@@ -12,7 +12,7 @@ import java.util.List;
 @Setter
 @Accessors(chain = true)
 @Entity
-@Table(name = "order")
+@Table(name = "orders")
 public class Order {
 
     @Id
@@ -27,11 +27,11 @@ public class Order {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToMany
+    @ManyToMany(cascade = { CascadeType.ALL })
     @JoinTable(
-            name = "order_product",
-            joinColumns = @JoinColumn(name = "order_id"),
-            inverseJoinColumns = @JoinColumn(name = "product_id"))
+            name = "orders_products",
+            joinColumns = { @JoinColumn(name = "order_id") },
+            inverseJoinColumns = { @JoinColumn(name = "product_id") })
     private List<Product> orderedProducts;
 
     public String toString() {

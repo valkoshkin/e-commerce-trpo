@@ -11,7 +11,7 @@ import java.util.List;
 @Setter
 @Accessors(chain = true)
 @Entity
-@Table(name = "user")
+@Table(name = "users")
 public class User {
 
     @Id
@@ -36,18 +36,18 @@ public class User {
     private Role role;
 
     @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id")
+    @JoinColumn(name = "user_id")
     private List<Review> reviews;
 
     @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id")
+    @JoinColumn(name = "user_id")
     private List<Order> orders;
 
-    @ManyToMany
+    @ManyToMany(cascade = { CascadeType.ALL })
     @JoinTable(
-            name = "user_product",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "product_id"))
+            name = "users_products",
+            joinColumns = { @JoinColumn(name = "user_id") },
+            inverseJoinColumns = { @JoinColumn(name = "product_id") })
     private List<Product> likedProducts;
 
     public String toString() {
