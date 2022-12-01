@@ -10,10 +10,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserProfileDto extends UserDto {
-    private int userId;
+    private Long userId;
     private String role;
 
-    public UserProfileDto(int userId, String username, String firstName, String lastName, String email, String address, String role) {
+    public UserProfileDto(Long userId, String username, String firstName, String lastName, String email, String address, String role) {
         this.userId = userId;
         this.username = username;
         this.firstName = firstName;
