@@ -18,7 +18,7 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "order_id")
-    private int orderId;
+    private Long orderId;
 
     @Column(name = "date")
     private Date date;
