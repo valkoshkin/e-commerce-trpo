@@ -8,7 +8,7 @@ import com.valkoshkin.ecommerce.services.UserDetailsImpl;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 public class UserMappers {
-    public static UserProfileDto mapUserDetailsToUserProfileDto(UserDetailsImpl userDetails, String role) {
+    public static UserProfileDto mapUserDetailsToUserProfileDto(UserDetailsImpl userDetails, String role, String token) {
         if (userDetails == null) {
             return null;
         }
@@ -19,7 +19,8 @@ public class UserMappers {
                 userDetails.getLastName(),
                 userDetails.getEmail(),
                 userDetails.getAddress(),
-                role
+                role,
+                token
         );
     }
 

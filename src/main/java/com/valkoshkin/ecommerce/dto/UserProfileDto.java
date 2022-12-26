@@ -12,8 +12,9 @@ import lombok.NoArgsConstructor;
 public class UserProfileDto extends UserDto {
     private Long userId;
     private String role;
+    private String token;
 
-    public UserProfileDto(Long userId, String username, String firstName, String lastName, String email, String address, String role) {
+    public UserProfileDto(Long userId, String username, String firstName, String lastName, String email, String address, String role, String token) {
         this.userId = userId;
         this.username = username;
         this.firstName = firstName;
@@ -21,5 +22,6 @@ public class UserProfileDto extends UserDto {
         this.email = email;
         this.address = address;
         this.role = role;
+        this.token = token;
     }
 }

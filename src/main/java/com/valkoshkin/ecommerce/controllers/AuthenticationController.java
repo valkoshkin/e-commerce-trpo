@@ -48,8 +48,7 @@ public class AuthenticationController {
         String role = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).findFirst().orElse(null);
 
         return ResponseEntity.ok()
-                .header(HttpHeaders.AUTHORIZATION, jwt)
-                .body(UserMappers.mapUserDetailsToUserProfileDto(userDetails, role));
+                .body(UserMappers.mapUserDetailsToUserProfileDto(userDetails, role, jwt));
     }
 
     @PostMapping(value = "/register", consumes = "application/json")
