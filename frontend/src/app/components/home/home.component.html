@@ -1,9 +1,9 @@
 <div class="home__container">
-  <nz-spin [nzSpinning]="loading">
-    <div *ngIf="!loading && isAdmin" class="home__action-bar">
+  <nz-spin [nzSpinning]="categoriesLoading || productsLoading">
+    <div *ngIf="!(categoriesLoading || productsLoading) && isAdmin" class="home__action-bar">
       <button nz-button nzType="default" (click)="showAddDialog()">Добавить товар</button>
     </div>
-    <div *ngIf="!loading" class="home__action-bar">
+    <div *ngIf="!(categoriesLoading || productsLoading)" class="home__action-bar">
       <nz-tag nzMode="checkable" [nzChecked]="favoritesChecked" (nzCheckedChange)="favoriteCheckedChange($event)">
         <span nz-icon nzType="heart" nzTheme="fill"></span>
         <span>Избранное</span>
@@ -15,12 +15,15 @@
         {{category}}
       </nz-tag>
     </div>
+    <div *ngIf="!(categoriesLoading || productsLoading) && !products.length" class="home__empty">
+      Нет товаров, соответствующих заданным критериям
+    </div>
     <div *ngIf="products.length" class="home__grid">
       <nz-card *ngFor="let product of products" class="home__card" [nzCover]="coverTemplate"
                [nzActions]="[actionInfo, actionFavorite, actionCart]">
         <nz-card-meta
-          [nzTitle]="product.content + ' ₽'"
-          [nzDescription]="product.title"
+          [nzTitle]="product.price + ' ₽'"
+          [nzDescription]="product.name"
         ></nz-card-meta>
 
         <ng-template #coverTemplate>

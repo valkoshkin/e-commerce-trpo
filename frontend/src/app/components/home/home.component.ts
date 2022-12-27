@@ -1,11 +1,15 @@
-import { Component, OnInit } from '@angular/core';
-import { TokenStorageService } from '../../services/token-storage/token-storage.service';
+import {Component, OnInit} from '@angular/core';
+import {TokenStorageService} from '../../services/token-storage/token-storage.service';
 import {
   UntypedFormBuilder,
   UntypedFormGroup,
   Validators,
 } from '@angular/forms';
-import { Role } from '../../common/types';
+import {Product, Role} from '../../common/types';
+import {ProductsService} from "../../services/products/products.service";
+import {Observer} from "rxjs";
+import {HttpErrorResponse} from "@angular/common/http";
+import {NzNotificationService} from "ng-zorro-antd/notification";
 
 @Component({
   selector: 'app-home',
@@ -13,17 +17,19 @@ import { Role } from '../../common/types';
   styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit {
-  products: { title: string; content: string; productId: number }[] = [];
+  products: Product[] = [];
+
+  productsLoading: boolean = false;
 
   favorites: number[] = [];
 
   categories: string[] = [];
 
+  categoriesLoading: boolean = false;
+
   selectedCategories: string[] = [];
 
   favoritesChecked: boolean = false;
-
-  loading: boolean = true;
 
   isAuthorized: boolean = false;
 
@@ -35,8 +41,43 @@ export class HomeComponent implements OnInit {
 
   constructor(
     private tokenStorage: TokenStorageService,
-    private fb: UntypedFormBuilder
-  ) {}
+    private fb: UntypedFormBuilder,
+    private productsService: ProductsService,
+    private notification: NzNotificationService
+  ) {
+  }
+
+  private fetchCategories() {
+    this.categoriesLoading = true;
+    const observer: Partial<Observer<any>> = {
+        next: (response: string[]) => {
+          this.categories = response;
+          this.categoriesLoading = false;
+        },
+        error: (error: HttpErrorResponse) => {
+          this.categoriesLoading = false;
+          this.notification.error('Error', error.error);
+        }
+      }
+    ;
+    this.productsService.fetchCategories().subscribe(observer);
+  }
+
+  private fetchProducts(categories: string[]) {
+    this.productsLoading = true;
+    const observer: Partial<Observer<any>> = {
+        next: (response: Product[]) => {
+          this.products = response;
+          this.productsLoading = false;
+        },
+        error: (error: HttpErrorResponse) => {
+          this.productsLoading = false;
+          this.notification.error('Error', error.error);
+        }
+      }
+    ;
+    this.productsService.fetchProducts(categories).subscribe(observer);
+  }
 
   ngOnInit(): void {
     const userFromStorage = this.tokenStorage.getUser();
@@ -44,32 +85,18 @@ export class HomeComponent implements OnInit {
       this.isAuthorized = true;
       this.isAdmin = userFromStorage.role === Role.ADMIN;
     }
-    setTimeout(() => {
-      this.loading = false;
-      this.products = [
-        { title: 'Title 1', content: '10499', productId: 1 },
-        { title: 'Title 1', content: '10499', productId: 2 },
-        { title: 'Title 1', content: '10499', productId: 3 },
-        { title: 'Title 1', content: '10499', productId: 4 },
-        { title: 'Title 1', content: '10499', productId: 5 },
-        { title: 'Title 1', content: '10499', productId: 6 },
-        { title: 'Title 1', content: '10499', productId: 7 },
-        { title: 'Title 1', content: '10499', productId: 8 },
-        { title: 'Title 1', content: '10499', productId: 9 },
-        { title: 'Title 1', content: '10499', productId: 10 },
-        { title: 'Title 1', content: '10499', productId: 11 },
-        { title: 'Title 1', content: '10499', productId: 12 },
-        { title: 'Title 1', content: '10499', productId: 13 },
-      ];
-      this.favorites = [2, 3];
-      this.addForm = this.fb.group({
-        name: [null, [Validators.required]],
-        description: [null, [Validators.required]],
-        price: [null, [Validators.required]],
-        category: [null, [Validators.required]],
-      });
-      this.categories = ['Ноутбуки', 'Смартфоны'];
-    }, 2000);
+
+    this.fetchCategories();
+    this.fetchProducts([]);
+
+    this.addForm = this.fb.group({
+      name: [null, [Validators.required]],
+      description: [null, [Validators.required]],
+      price: [null, [Validators.required]],
+      category: [null, [Validators.required]],
+    });
+
+    // this.favorites = [2, 3];
   }
 
   toggleFavorite(itemId: number): void {
@@ -131,6 +158,6 @@ export class HomeComponent implements OnInit {
       this.selectedCategories.splice(index, 1);
     }
 
-    console.log(this.selectedCategories);
+    this.fetchProducts(this.selectedCategories);
   }
 }
