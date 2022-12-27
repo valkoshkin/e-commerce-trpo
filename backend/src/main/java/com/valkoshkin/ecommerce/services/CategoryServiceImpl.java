@@ -1,6 +1,6 @@
 package com.valkoshkin.ecommerce.services;
 
-import com.valkoshkin.ecommerce.dto.CategoryDto;
+import com.valkoshkin.ecommerce.entities.Category;
 import com.valkoshkin.ecommerce.repositories.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,7 +14,7 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
 
     @Override
-    public List<CategoryDto> getCategories() {
-        return categoryRepository.findAll().stream().map(CategoryDto::fromCategory).collect(Collectors.toList());
+    public List<String> getAllCategories() {
+        return categoryRepository.findAll().stream().map(Category::getName).collect(Collectors.toList());
     }
 }

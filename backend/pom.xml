@@ -15,6 +15,7 @@
 
 	<properties>
 		<java.version>17</java.version>
+		<start-class>com.valkoshkin.ecommerce.ECommerceApplication</start-class>
 	</properties>
 	<dependencies>
 		<dependency>
