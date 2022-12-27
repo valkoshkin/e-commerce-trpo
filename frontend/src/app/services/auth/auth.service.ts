@@ -7,8 +7,7 @@ import { LoginPayload, RegisterPayload } from '../../common/types';
 const API_URL = '/api/v1/auth';
 const requestOptions = {
   headers: new HttpHeaders({
-    'Content-Type': 'application/json',
-    'Access-Control-Allow-Origin': '*',
+    'Content-Type': 'application/json'
   }),
 };
 

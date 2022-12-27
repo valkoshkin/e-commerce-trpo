@@ -49,6 +49,7 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { CartComponent } from './components/cart/cart.component';
 import { NzListModule } from 'ng-zorro-antd/list';
+import {authInterceptorProviders} from "./services/auth/auth.interceptor";
 
 const icons = [
   UserOutline,
@@ -115,6 +116,7 @@ const nzConfig: NzConfig = {
     UnauthorizedAccessOnlyGuard,
     AuthorizedAccessOnlyGuard,
     { provide: NZ_CONFIG, useValue: nzConfig },
+    authInterceptorProviders
   ],
   bootstrap: [AppComponent],
 })
