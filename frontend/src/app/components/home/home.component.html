@@ -1,0 +1,95 @@
+<div class="home__container">
+  <nz-spin [nzSpinning]="loading">
+    <div *ngIf="!loading && isAdmin" class="home__action-bar">
+      <button nz-button nzType="default" (click)="showAddDialog()">Добавить товар</button>
+    </div>
+    <div *ngIf="!loading" class="home__action-bar">
+      <nz-tag nzMode="checkable" [nzChecked]="favoritesChecked" (nzCheckedChange)="favoriteCheckedChange($event)">
+        <span nz-icon nzType="heart" nzTheme="fill"></span>
+        <span>Избранное</span>
+      </nz-tag>
+      <nz-divider nzType="vertical"></nz-divider>
+      <nz-tag *ngFor="let category of categories" [nzMode]="favoritesChecked ? 'default' : 'checkable'"
+              [nzChecked]="selectedCategories.includes(category)"
+              (nzCheckedChange)="selectedCategoriesChange(category)">
+        {{category}}
+      </nz-tag>
+    </div>
+    <div *ngIf="products.length" class="home__grid">
+      <nz-card *ngFor="let product of products" class="home__card" [nzCover]="coverTemplate"
+               [nzActions]="[actionInfo, actionFavorite, actionCart]">
+        <nz-card-meta
+          [nzTitle]="product.content + ' ₽'"
+          [nzDescription]="product.title"
+        ></nz-card-meta>
+
+        <ng-template #coverTemplate>
+          <nz-empty class="home__card-photo" nzNotFoundContent="Нет фото"></nz-empty>
+        </ng-template>
+        <ng-template #actionInfo>
+          <a routerLink="/product" [queryParams]="{id: product.productId}">
+            <span nz-icon nzType="info-circle" nzTheme="outline"></span>
+          </a>
+        </ng-template>
+        <ng-template #actionFavorite>
+          <span (click)="toggleFavorite(product.productId)"
+                *ngIf="isAuthorized" nz-icon
+                nzType="heart"
+                [nzTheme]="favorites.includes(product.productId) ? 'fill' : 'outline'"></span>
+        </ng-template>
+        <ng-template #actionCart>
+          <span (click)="addToCart(product.productId)" *ngIf="isAuthorized" nz-icon nzType="shopping-cart"
+                nzTheme="outline"></span>
+        </ng-template>
+      </nz-card>
+    </div>
+  </nz-spin>
+
+  <nz-modal [(nzVisible)]="addDialogVisible" (nzOnCancel)="editDialogCancel()" (nzOnOk)="addDialogOk()"
+            (nzAfterClose)="afterEditDialogClose()" nzTitle="Добавление товара"
+            nzOkText="Добавить" nzCancelText="Отмена" nzCentered>
+    <ng-container *nzModalContent>
+      <form nz-form [formGroup]="addForm" class="home__modal-form">
+
+        <nz-form-item>
+          <nz-form-label [nzXs]="24" nzFor="name">Наименование</nz-form-label>
+          <nz-form-control [nzXs]="24">
+            <nz-input-group>
+              <textarea nz-input rows="2" formControlName="name" [nzAutosize]="{ maxRows: 4 }"></textarea>
+            </nz-input-group>
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-label [nzXs]="24" nzFor="price">Цена, ₽</nz-form-label>
+          <nz-form-control [nzXs]="24">
+            <nz-input-group>
+              <input type="text" nz-input formControlName="price"/>
+            </nz-input-group>
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-label [nzXs]="24" nzFor="description">Описание</nz-form-label>
+          <nz-form-control [nzXs]="24">
+            <nz-input-group>
+              <textarea nz-input rows="2" formControlName="description" [nzAutosize]="{ maxRows: 4 }"></textarea>
+            </nz-input-group>
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-label [nzXs]="24" nzFor="category">Категория</nz-form-label>
+          <nz-form-control [nzXs]="24">
+            <nz-input-group>
+              <nz-select>
+                <nz-option *ngFor="let category of categories" [nzValue]="category" [nzLabel]="category"></nz-option>
+              </nz-select>
+            </nz-input-group>
+          </nz-form-control>
+        </nz-form-item>
+
+      </form>
+    </ng-container>
+  </nz-modal>
+</div>

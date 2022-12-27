@@ -1,0 +1,36 @@
+.home__container {
+  width: 100%;
+  padding: 48px 0;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.home__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-column-gap: 24px;
+  grid-row-gap: 24px;
+}
+
+.home__card {
+  width: 300px;
+  height: fit-content;
+}
+
+.home__card-photo {
+  padding: 12px 0 0;
+}
+
+.home__action-bar {
+  display: flex;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.home__modal-form {
+  nz-form-label {
+    text-align: left;
+  }
+}

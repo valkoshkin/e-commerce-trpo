@@ -1,0 +1,29 @@
+.profile__container {
+  min-height: 200px;
+  height: 100%;
+  width: 100%;
+  padding: 32px 0;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  > :not(:last-child) {
+    margin-bottom: 48px;
+  }
+}
+
+.profile__card {
+  width: 1272px;
+  display: flex;
+
+  > :not(:last-child) {
+    margin: 44px 64px 0 0;
+  }
+}
+
+.profile__orders-wrapper {
+  width: 1272px;
+  display: flex;
+  flex-direction: column;
+}

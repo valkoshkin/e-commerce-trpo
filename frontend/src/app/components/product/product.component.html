@@ -1,0 +1,106 @@
+<nz-spin [nzSpinning]="loading">
+  <div class="product__container">
+    <div *ngIf="!!product" class="product__card">
+      <div class="product__card-left">
+        <nz-empty class="product__photo" nzNotFoundContent="Нет фото"></nz-empty>
+        <button nz-button nzType="primary">Добавить в корзину</button>
+        <button nz-button nzType="default">Добавить в избранное</button>
+        <nz-divider class="product__card-divider" *ngIf="isAdmin" nzPlain></nz-divider>
+        <button *ngIf="isAdmin" nz-button nzType="default" (click)="showEditDialog()">Редактировать</button>
+        <button *ngIf="isAdmin" nz-button nzType="default" nzDanger (click)="showDeleteDialog()">Удалить</button>
+      </div>
+      <nz-descriptions [nzTitle]="product.name" [nzColumn]="1" nzBordered>
+        <nz-descriptions-item nzTitle="Цена">{{product.price}} ₽</nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Категория">{{product.category}}</nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Описание">{{product.description}}</nz-descriptions-item>
+        <nz-descriptions-item nzTitle="ID">{{product.productId}}</nz-descriptions-item>
+      </nz-descriptions>
+    </div>
+    <div *ngIf="!!product" class="product__reviews">
+      <div class="product__reviews-title">
+        <h2>Отзывы</h2>
+        <button nz-button nzType="default" nzShape="circle" nzSize="small" (click)="showReviewDialog()">
+          <span nz-icon nzType="plus" nzTheme="outline"></span>
+        </button>
+      </div>
+      <span *ngIf="!reviews.length" style="margin-top: 12px">Отзывов пока нет</span>
+      <nz-comment *ngFor="let review of reviews" [nzAuthor]="buildAuthorName(review.author)"
+                  [nzDatetime]="review.date">
+        <nz-comment-content>
+          <nz-progress nzSteps="5" [nzPercent]="20 * review.rating" nzStrokeColor="#1890ff"
+                       [nzFormat]="buildRatingText" nzStatus="normal"></nz-progress>
+          {{review.content}}
+        </nz-comment-content>
+      </nz-comment>
+    </div>
+  </div>
+
+  <nz-modal [(nzVisible)]="editDialogVisible" (nzOnCancel)="editDialogCancel()" (nzOnOk)="editDialogOk()"
+            (nzAfterClose)="afterEditDialogClose()" nzTitle="Редактирование товара"
+            nzOkText="Применить" nzCancelText="Отмена" nzCentered>
+    <ng-container *nzModalContent>
+      <form nz-form [formGroup]="editForm" class="product__modal-form">
+
+        <nz-form-item>
+          <nz-form-label [nzXs]="24" nzFor="name">Наименование</nz-form-label>
+          <nz-form-control [nzXs]="24">
+            <nz-input-group>
+              <textarea nz-input rows="2" formControlName="name" [nzAutosize]="{ maxRows: 4 }"></textarea>
+            </nz-input-group>
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-label [nzXs]="24" nzFor="price">Цена, ₽</nz-form-label>
+          <nz-form-control [nzXs]="24">
+            <nz-input-group>
+              <input type="text" nz-input formControlName="price"/>
+            </nz-input-group>
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-label [nzXs]="24" nzFor="description">Описание</nz-form-label>
+          <nz-form-control [nzXs]="24">
+            <nz-input-group>
+              <textarea nz-input rows="2" formControlName="description" [nzAutosize]="{ maxRows: 4 }"></textarea>
+            </nz-input-group>
+          </nz-form-control>
+        </nz-form-item>
+
+      </form>
+    </ng-container>
+  </nz-modal>
+
+  <nz-modal [(nzVisible)]="deleteDialogVisible" (nzOnCancel)="deleteDialogCancel()" (nzOnOk)="deleteDialogOk()"
+            nzTitle="Удаление товара"
+            nzContent="Вы уверены, что хотите удалить данный товар? Данное действие невозможно будет отменить"
+            nzOkText="Да" nzCancelText="Отмена" nzCentered nzOkDanger>
+  </nz-modal>
+
+  <nz-modal [(nzVisible)]="reviewDialogVisible" (nzOnCancel)="reviewDialogCancel()" (nzOnOk)="reviewDialogOk()"
+            nzTitle="Добавить отзыв"
+            nzOkText="Добавить" nzCancelText="Отмена" nzCentered>
+    <ng-container *nzModalContent>
+      <form nz-form [formGroup]="reviewForm" class="product__modal-form">
+        <nz-form-item>
+          <nz-form-control [nzXs]="24">
+            <nz-input-group>
+              <nz-rate [ngModel]="0" formControlName="rating"></nz-rate>
+            </nz-input-group>
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-control [nzXs]="24">
+            <nz-input-group>
+              <textarea nz-input rows="4" formControlName="content"
+                        [nzAutosize]="{ minRows: 4, maxRows: 6 }"></textarea>
+            </nz-input-group>
+          </nz-form-control>
+        </nz-form-item>
+      </form>
+    </ng-container>
+  </nz-modal>
+
+</nz-spin>

@@ -1,0 +1,110 @@
+<div class="root-container">
+  <header class="app__header">
+    <nav class="app__nav">
+      <!--  LEFT PANEL  -->
+      <ul class="app__nav-list">
+        <li class="app__nav-item">
+          <a
+            class="app__logo-container"
+            routerLink="home"
+          >
+          <span
+            class="app__logo-image"
+            nz-icon nzType="shop"
+            nzTheme="outline"
+          ></span>
+            <span class="app__logo-text">E-COMMERCE</span>
+          </a>
+        </li>
+        <li class="app__nav-item">
+          <a
+            *ngIf="isAuthorized"
+            class="app__nav-link"
+            routerLink="/cart"
+          >
+            Корзина
+          </a>
+        </li>
+      </ul>
+      <!--  LEFT PANEL  -->
+
+      <!--  RIGHT PANEL  -->
+      <ul class="app__nav-list">
+        <!--  UNAUTHORIZED ONLY  -->
+        <li class="app__nav-item">
+          <a
+            *ngIf="!isAuthorized"
+            class="app__nav-link app__text-with-icon"
+            routerLink="/login"
+          >
+          <span
+            class="app__nav-icon"
+            nz-icon
+            nzType="login"
+            nzTheme="outline"
+          ></span>
+            <span>Вход</span>
+          </a>
+        </li>
+        <li class="app__nav-item">
+          <a
+            *ngIf="!isAuthorized"
+            class="app__nav-link app__text-with-icon"
+            routerLink="/register"
+          >
+          <span
+            class="app__nav-icon"
+            nz-icon
+            nzType="user-add"
+            nzTheme="outline"
+          ></span>
+            <span>Регистрация</span>
+          </a>
+        </li>
+        <!--  UNAUTHORIZED ONLY  -->
+
+        <!--  AUTHORIZED ONLY  -->
+        <li class="app__nav-item">
+          <a
+            *ngIf="isAuthorized"
+            class="app__nav-link app__text-with-icon"
+            routerLink="/profile"
+          >
+          <span
+            class="app__nav-icon"
+            nz-icon
+            nzType="user"
+            nzTheme="outline"
+          ></span>
+            <span>Профиль</span>
+          </a>
+        </li>
+        <li class="app__nav-item">
+          <a
+            *ngIf="isAuthorized"
+            (click)="logout()"
+            class="app__nav-link app__text-with-icon"
+          >
+          <span
+            class="app__nav-icon"
+            nz-icon
+            nzType="logout"
+            nzTheme="outline"
+          ></span>
+            <span>Выход</span>
+          </a>
+        </li>
+        <!--  AUTHORIZED ONLY  -->
+      </ul>
+      <!--  RIGHT PANEL  -->
+    </nav>
+  </header>
+
+  <div class="app__content">
+    <router-outlet></router-outlet>
+  </div>
+
+  <footer class="app__footer">
+    E-commerce app
+  </footer>
+</div>
