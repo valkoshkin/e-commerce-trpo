@@ -2,6 +2,7 @@ package com.valkoshkin.ecommerce.controllers;
 
 import com.valkoshkin.ecommerce.dto.MessageDto;
 import com.valkoshkin.ecommerce.dto.product.CreateProductDto;
+import com.valkoshkin.ecommerce.dto.product.EditProductDto;
 import com.valkoshkin.ecommerce.dto.product.ProductDto;
 import com.valkoshkin.ecommerce.dto.review.ReviewDto;
 import com.valkoshkin.ecommerce.entities.Category;
@@ -51,5 +52,17 @@ public class ProductController {
     public ResponseEntity<?> deleteProduct(@PathVariable Long id) {
         productService.deleteProductById(id);
         return ResponseEntity.ok(new MessageDto("Товар успешно удален"));
+    }
+
+    @PatchMapping("/{id}")
+    public ProductDto editProduct(@PathVariable Long id, @RequestBody EditProductDto editProductDto) {
+        Product product = productService.getProductById(id);
+
+        product.setName(editProductDto.getName());
+        product.setDescription(editProductDto.getDescription());
+        product.setPrice(editProductDto.getPrice());
+        productService.save(product);
+
+        return ProductDto.fromProduct(product);
     }
 }

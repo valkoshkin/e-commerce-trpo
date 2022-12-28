@@ -35,6 +35,12 @@ export interface Product {
 
 export type CreateProductPayload = Omit<Product, 'productId'>;
 
+export interface EditProductPayload {
+  name: string;
+  description: string;
+  price: number;
+}
+
 export interface Review {
   reviewId: number;
   rating: number;

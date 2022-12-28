@@ -40,7 +40,7 @@
 
   <nz-modal [(nzVisible)]="editDialogVisible" (nzOnCancel)="editDialogCancel()" (nzOnOk)="editDialogOk()"
             (nzAfterClose)="afterEditDialogClose()" nzTitle="Редактирование товара"
-            nzOkText="Применить" nzCancelText="Отмена" nzCentered>
+            nzOkText="Применить" nzCancelText="Отмена" nzCentered [nzOkLoading]="dialogLoading">
     <ng-container *nzModalContent>
       <form nz-form [formGroup]="editForm" class="product__modal-form">
 
@@ -78,12 +78,12 @@
   <nz-modal [(nzVisible)]="deleteDialogVisible" (nzOnCancel)="deleteDialogCancel()" (nzOnOk)="deleteDialogOk()"
             nzTitle="Удаление товара"
             nzContent="Вы уверены, что хотите удалить данный товар? Данное действие невозможно будет отменить"
-            nzOkText="Да" nzCancelText="Отмена" nzCentered nzOkDanger [nzOkLoading]="deleteDialogLoading">
+            nzOkText="Да" nzCancelText="Отмена" nzCentered nzOkDanger [nzOkLoading]="dialogLoading">
   </nz-modal>
 
   <nz-modal [(nzVisible)]="reviewDialogVisible" (nzOnCancel)="reviewDialogCancel()" (nzOnOk)="reviewDialogOk()"
             nzTitle="Добавить отзыв"
-            nzOkText="Добавить" nzCancelText="Отмена" nzCentered [nzOkLoading]="reviewDialogLoading">
+            nzOkText="Добавить" nzCancelText="Отмена" nzCentered [nzOkLoading]="dialogLoading">
     <ng-container *nzModalContent>
       <form nz-form [formGroup]="reviewForm" class="product__modal-form">
         <nz-form-item>

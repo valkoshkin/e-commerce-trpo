@@ -2,9 +2,12 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import {
-  CreateProductPayload, CreateReviewPayload,
+  CreateProductPayload,
+  CreateReviewPayload,
+  EditProductPayload,
   MessageWrapper,
-  Product, Review,
+  Product,
+  Review,
 } from '../../common/types';
 
 const API_PREFIX = '/api/v1';
@@ -30,11 +33,15 @@ export class ProductsService {
   }
 
   fetchProduct(productId: number): Observable<Product> {
-    return this.http.get(`${API_PREFIX}/products/${productId}`) as Observable<Product>;
+    return this.http.get(
+      `${API_PREFIX}/products/${productId}`
+    ) as Observable<Product>;
   }
 
   fetchReviews(productId: number): Observable<Review[]> {
-    return this.http.get(`${API_PREFIX}/products/${productId}/reviews`) as Observable<Review[]>;
+    return this.http.get(
+      `${API_PREFIX}/products/${productId}/reviews`
+    ) as Observable<Review[]>;
   }
 
   createProduct(payload: CreateProductPayload): Observable<MessageWrapper> {
@@ -50,10 +57,23 @@ export class ProductsService {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
       }),
-    }) as Observable<MessageWrapper>
+    }) as Observable<MessageWrapper>;
   }
 
   deleteProduct(productId: number): Observable<MessageWrapper> {
-    return this.http.delete(`${API_PREFIX}/products/${productId}`) as Observable<MessageWrapper>;
+    return this.http.delete(
+      `${API_PREFIX}/products/${productId}`
+    ) as Observable<MessageWrapper>;
+  }
+
+  editProduct(
+    productId: number,
+    payload: EditProductPayload
+  ): Observable<Product> {
+    return this.http.patch(`${API_PREFIX}/products/${productId}`, payload, {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      }),
+    }) as Observable<Product>;
   }
 }

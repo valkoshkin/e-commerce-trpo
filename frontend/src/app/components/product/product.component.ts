@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {CreateReviewPayload, MessageWrapper, Product, Review, Role, User} from '../../common/types';
+import {CreateReviewPayload, EditProductPayload, MessageWrapper, Product, Review, Role, User} from '../../common/types';
 import { TokenStorageService } from '../../services/token-storage/token-storage.service';
 import {
   UntypedFormBuilder,
@@ -28,17 +28,15 @@ export class ProductComponent implements OnInit {
 
   reviewsLoading: boolean = false;
 
+  dialogLoading: boolean = false;
+
   isAdmin: boolean = false;
 
   deleteDialogVisible: boolean = false;
 
-  deleteDialogLoading: boolean = false;
-
   editDialogVisible: boolean = false;
 
   reviewDialogVisible: boolean = false;
-
-  reviewDialogLoading: boolean = false;
 
   editForm!: UntypedFormGroup;
 
@@ -88,15 +86,15 @@ export class ProductComponent implements OnInit {
   }
 
   private createReview(payload: CreateReviewPayload, onSuccess?: () => void) {
-    this.reviewDialogLoading = true;
+    this.dialogLoading = true;
     const observer: Partial<Observer<MessageWrapper>> = {
       next: (messageWrapper: MessageWrapper) => {
         this.notification.success('Операция выполнена', messageWrapper.message);
-        this.reviewDialogLoading = false;
+        this.dialogLoading = false;
         onSuccess?.();
       },
       error: (error: HttpErrorResponse) => {
-        this.reviewDialogLoading = false;
+        this.dialogLoading = false;
         this.notification.error('Ошибка', error.error);
       },
     };
@@ -104,19 +102,36 @@ export class ProductComponent implements OnInit {
   }
 
   private deleteProduct(productId: number, onSuccess?: () => void) {
-    this.deleteDialogLoading = true;
+    this.dialogLoading = true;
     const observer: Partial<Observer<MessageWrapper>> = {
       next: (messageWrapper: MessageWrapper) => {
         this.notification.success('Операция выполнена', messageWrapper.message);
-        this.deleteDialogLoading = false;
+        this.dialogLoading = false;
         onSuccess?.();
       },
       error: (error: HttpErrorResponse) => {
-        this.deleteDialogLoading = false;
+        this.dialogLoading = false;
         this.notification.error('Ошибка', error.error);
       },
     };
     this.productsService.deleteProduct(productId).subscribe(observer);
+  }
+
+  private editProduct(productId: number, payload: EditProductPayload, onSuccess?: (product: Product) => void) {
+    this.dialogLoading = true;
+    const observer: Partial<Observer<Product>> = {
+      next: (response: Product) => {
+        this.dialogLoading = false;
+        this.product = response;
+        onSuccess?.(response);
+      },
+      error: (error: HttpErrorResponse) => {
+        this.dialogLoading = false;
+        this.notification.error('Ошибка', error.error);
+      },
+    };
+    this.productsService.editProduct(productId, payload).subscribe(observer);
+
   }
 
   ngOnInit(): void {
@@ -188,7 +203,18 @@ export class ProductComponent implements OnInit {
   }
 
   editDialogOk(): void {
-    console.log(`Edit product`);
+    if (this.editForm.valid) {
+      this.editProduct(this.productId!, this.editForm.value, () => {
+        this.editDialogVisible = false;
+      })
+    } else {
+      Object.values(this.editForm.controls).forEach((control) => {
+        if (control.invalid) {
+          control.markAsDirty();
+          control.updateValueAndValidity({ onlySelf: true });
+        }
+      });
+    }
   }
 
   editDialogCancel(): void {
