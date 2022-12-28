@@ -25,6 +25,11 @@ public class ProductController {
         return productService.getAllProducts(categories);
     }
 
+    @GetMapping(path = "/{id}")
+    public ProductDto getProduct(@PathVariable Long id) {
+        return productService.getProductById(id);
+    }
+
     @PostMapping("/create")
     public ResponseEntity<?> createProduct(@RequestBody CreateProductDto createProductDto) {
         Category category = categoryService.getCategoryByName(createProductDto.getCategory());
