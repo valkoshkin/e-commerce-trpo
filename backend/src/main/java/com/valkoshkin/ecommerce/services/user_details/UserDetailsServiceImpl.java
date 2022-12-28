@@ -1,4 +1,4 @@
-package com.valkoshkin.ecommerce.services;
+package com.valkoshkin.ecommerce.services.user_details;
 
 import com.valkoshkin.ecommerce.entities.User;
 import com.valkoshkin.ecommerce.repositories.UserRepository;

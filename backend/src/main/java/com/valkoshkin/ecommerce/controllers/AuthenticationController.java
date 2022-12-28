@@ -7,8 +7,8 @@ import com.valkoshkin.ecommerce.dto.user.UserWithCredentialsDto;
 import com.valkoshkin.ecommerce.entities.User;
 import com.valkoshkin.ecommerce.entities.enums.UserRole;
 import com.valkoshkin.ecommerce.mappers.UserMappers;
-import com.valkoshkin.ecommerce.repositories.UserRepository;
-import com.valkoshkin.ecommerce.services.UserDetailsImpl;
+import com.valkoshkin.ecommerce.services.user.UserService;
+import com.valkoshkin.ecommerce.services.user_details.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthenticationController {
     private final AuthenticationManager authenticationManager;
 
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -52,13 +52,13 @@ public class AuthenticationController {
 
     @PostMapping(value = "/register", consumes = "application/json")
     public ResponseEntity<?> registerUser(@RequestBody UserWithCredentialsDto userWithCredentialsDto) {
-        if (userRepository.existsByUsernameOrEmail(userWithCredentialsDto.getUsername(), userWithCredentialsDto.getEmail())) {
-            return ResponseEntity.badRequest().body(new MessageDto("User with this username or email already exists"));
+        if (userService.existsByUsernameOrEmail(userWithCredentialsDto.getUsername(), userWithCredentialsDto.getEmail())) {
+            return ResponseEntity.badRequest().body(new MessageDto("Пользователь с данным именем пользователя или email уже существует"));
         }
 
         User user = UserMappers.mapUserWithCredentialsToUser(userWithCredentialsDto, UserRole.ROLE_USER, passwordEncoder);
-        userRepository.save(user);
+        userService.save(user);
 
-        return ResponseEntity.ok(new MessageDto("User registered successfully"));
+        return ResponseEntity.ok(new MessageDto("Пользователь успешно зарегистрирован"));
     }
 }

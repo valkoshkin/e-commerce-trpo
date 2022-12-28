@@ -1,4 +1,4 @@
-package com.valkoshkin.ecommerce.services;
+package com.valkoshkin.ecommerce.services.product;
 
 import com.valkoshkin.ecommerce.dto.product.ProductDto;
 import com.valkoshkin.ecommerce.entities.Product;
@@ -6,7 +6,7 @@ import com.valkoshkin.ecommerce.entities.Product;
 import java.util.List;
 
 public interface ProductService {
-    List<ProductDto> getAllProducts(List<String> categories);
-    ProductDto getProductById(Long id);
+    List<Product> getAllProducts(List<String> categories);
+    Product getProductById(Long id);
     void save(Product product);
 }

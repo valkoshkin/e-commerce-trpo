@@ -1,6 +1,6 @@
 package com.valkoshkin.ecommerce.auth;
 
-import com.valkoshkin.ecommerce.services.UserDetailsImpl;
+import com.valkoshkin.ecommerce.services.user_details.UserDetailsImpl;
 import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

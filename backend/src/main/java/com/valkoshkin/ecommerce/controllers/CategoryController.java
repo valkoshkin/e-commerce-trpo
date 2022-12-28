@@ -1,6 +1,6 @@
 package com.valkoshkin.ecommerce.controllers;
 
-import com.valkoshkin.ecommerce.services.CategoryService;
+import com.valkoshkin.ecommerce.services.category.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

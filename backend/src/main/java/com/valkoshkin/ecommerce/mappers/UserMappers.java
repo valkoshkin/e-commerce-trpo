@@ -4,7 +4,7 @@ import com.valkoshkin.ecommerce.dto.user.UserProfileDto;
 import com.valkoshkin.ecommerce.dto.user.UserWithCredentialsDto;
 import com.valkoshkin.ecommerce.entities.User;
 import com.valkoshkin.ecommerce.entities.enums.UserRole;
-import com.valkoshkin.ecommerce.services.UserDetailsImpl;
+import com.valkoshkin.ecommerce.services.user_details.UserDetailsImpl;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 public class UserMappers {

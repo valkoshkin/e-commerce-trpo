@@ -1,4 +1,4 @@
-package com.valkoshkin.ecommerce.services;
+package com.valkoshkin.ecommerce.services.category;
 
 import com.valkoshkin.ecommerce.entities.Category;
 import com.valkoshkin.ecommerce.repositories.CategoryRepository;

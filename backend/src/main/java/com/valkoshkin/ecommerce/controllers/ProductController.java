@@ -5,13 +5,14 @@ import com.valkoshkin.ecommerce.dto.product.CreateProductDto;
 import com.valkoshkin.ecommerce.dto.product.ProductDto;
 import com.valkoshkin.ecommerce.entities.Category;
 import com.valkoshkin.ecommerce.entities.Product;
-import com.valkoshkin.ecommerce.services.CategoryService;
-import com.valkoshkin.ecommerce.services.ProductService;
+import com.valkoshkin.ecommerce.services.category.CategoryService;
+import com.valkoshkin.ecommerce.services.product.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/products")
@@ -22,12 +23,12 @@ public class ProductController {
 
     @GetMapping
     public List<ProductDto> getAllProducts(@RequestParam(required = false) List<String> categories) {
-        return productService.getAllProducts(categories);
+        return productService.getAllProducts(categories).stream().map(ProductDto::fromProduct).collect(Collectors.toList());
     }
 
     @GetMapping(path = "/{id}")
     public ProductDto getProduct(@PathVariable Long id) {
-        return productService.getProductById(id);
+        return ProductDto.fromProduct(productService.getProductById(id));
     }
 
     @PostMapping("/create")
@@ -36,6 +37,6 @@ public class ProductController {
         Product product = createProductDto.toProduct(category);
         productService.save(product);
 
-        return ResponseEntity.ok(new MessageDto("Product added successfully"));
+        return ResponseEntity.ok(new MessageDto("Товар успешно добавлен"));
     }
 }
