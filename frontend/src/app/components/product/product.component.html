@@ -18,7 +18,7 @@
     </div>
 
     <nz-spin [nzSpinning]="reviewsLoading">
-      <div *ngIf="!!product" class="product__reviews">
+      <div *ngIf="!!product && !productLoading" class="product__reviews">
         <div class="product__reviews-title">
           <h2>Отзывы</h2>
           <button nz-button nzType="default" nzShape="circle" nzSize="small" (click)="showReviewDialog()">
@@ -78,7 +78,7 @@
   <nz-modal [(nzVisible)]="deleteDialogVisible" (nzOnCancel)="deleteDialogCancel()" (nzOnOk)="deleteDialogOk()"
             nzTitle="Удаление товара"
             nzContent="Вы уверены, что хотите удалить данный товар? Данное действие невозможно будет отменить"
-            nzOkText="Да" nzCancelText="Отмена" nzCentered nzOkDanger>
+            nzOkText="Да" nzCancelText="Отмена" nzCentered nzOkDanger [nzOkLoading]="deleteDialogLoading">
   </nz-modal>
 
   <nz-modal [(nzVisible)]="reviewDialogVisible" (nzOnCancel)="reviewDialogCancel()" (nzOnOk)="reviewDialogOk()"

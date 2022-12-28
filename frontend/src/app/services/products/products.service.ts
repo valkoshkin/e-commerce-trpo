@@ -52,4 +52,8 @@ export class ProductsService {
       }),
     }) as Observable<MessageWrapper>
   }
+
+  deleteProduct(productId: number): Observable<MessageWrapper> {
+    return this.http.delete(`${API_PREFIX}/products/${productId}`) as Observable<MessageWrapper>;
+  }
 }

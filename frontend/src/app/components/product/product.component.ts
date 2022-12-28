@@ -10,6 +10,7 @@ import { ProductsService } from '../../services/products/products.service';
 import { Observer } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-product',
@@ -31,6 +32,8 @@ export class ProductComponent implements OnInit {
 
   deleteDialogVisible: boolean = false;
 
+  deleteDialogLoading: boolean = false;
+
   editDialogVisible: boolean = false;
 
   reviewDialogVisible: boolean = false;
@@ -45,7 +48,8 @@ export class ProductComponent implements OnInit {
     private tokenStorage: TokenStorageService,
     private fb: UntypedFormBuilder,
     private productsService: ProductsService,
-    private notification: NzNotificationService
+    private notification: NzNotificationService,
+    private router: Router
   ) {} // + profile service
 
   private fetchProduct(
@@ -87,7 +91,7 @@ export class ProductComponent implements OnInit {
     this.reviewDialogLoading = true;
     const observer: Partial<Observer<MessageWrapper>> = {
       next: (messageWrapper: MessageWrapper) => {
-        this.notification.success('Операция успешно выполнена', messageWrapper.message);
+        this.notification.success('Операция выполнена', messageWrapper.message);
         this.reviewDialogLoading = false;
         onSuccess?.();
       },
@@ -97,6 +101,22 @@ export class ProductComponent implements OnInit {
       },
     };
     this.productsService.createReview(payload).subscribe(observer);
+  }
+
+  private deleteProduct(productId: number, onSuccess?: () => void) {
+    this.deleteDialogLoading = true;
+    const observer: Partial<Observer<MessageWrapper>> = {
+      next: (messageWrapper: MessageWrapper) => {
+        this.notification.success('Операция выполнена', messageWrapper.message);
+        this.deleteDialogLoading = false;
+        onSuccess?.();
+      },
+      error: (error: HttpErrorResponse) => {
+        this.deleteDialogLoading = false;
+        this.notification.error('Ошибка', error.error);
+      },
+    };
+    this.productsService.deleteProduct(productId).subscribe(observer);
   }
 
   ngOnInit(): void {
@@ -146,7 +166,9 @@ export class ProductComponent implements OnInit {
   }
 
   deleteDialogOk(): void {
-    console.log(`Delete product`);
+    this.deleteProduct(this.productId!, () => {
+      this.router.navigateByUrl("/").then();
+    });
   }
 
   deleteDialogCancel(): void {

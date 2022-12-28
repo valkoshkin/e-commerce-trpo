@@ -4,12 +4,14 @@ import com.valkoshkin.ecommerce.entities.Product;
 import com.valkoshkin.ecommerce.repositories.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
 
@@ -27,5 +29,10 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void save(Product product) {
         productRepository.save(product);
+    }
+
+    @Override
+    public void deleteProductById(Long id) {
+        productRepository.deleteByProductId(id);
     }
 }

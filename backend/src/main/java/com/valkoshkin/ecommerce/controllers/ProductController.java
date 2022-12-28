@@ -46,4 +46,10 @@ public class ProductController {
 
         return ResponseEntity.ok(new MessageDto("Товар успешно добавлен"));
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteProduct(@PathVariable Long id) {
+        productService.deleteProductById(id);
+        return ResponseEntity.ok(new MessageDto("Товар успешно удален"));
+    }
 }
