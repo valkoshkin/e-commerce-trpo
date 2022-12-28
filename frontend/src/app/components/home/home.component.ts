@@ -55,14 +55,14 @@ export class HomeComponent implements OnInit {
 
   private fetchCategories() {
     this.categoriesLoading = true;
-    const observer: Partial<Observer<any>> = {
+    const observer: Partial<Observer<string[]>> = {
       next: (response: string[]) => {
         this.categories = response;
         this.categoriesLoading = false;
       },
       error: (error: HttpErrorResponse) => {
         this.categoriesLoading = false;
-        this.notification.error('Error', error.error);
+        this.notification.error('Ошибка', error.error);
       },
     };
     this.productsService.fetchCategories().subscribe(observer);
@@ -70,14 +70,14 @@ export class HomeComponent implements OnInit {
 
   private fetchProducts(categories: string[]) {
     this.productsLoading = true;
-    const observer: Partial<Observer<any>> = {
+    const observer: Partial<Observer<Product[]>> = {
       next: (response: Product[]) => {
         this.products = response;
         this.productsLoading = false;
       },
       error: (error: HttpErrorResponse) => {
         this.productsLoading = false;
-        this.notification.error('Error', error.error);
+        this.notification.error('Ошибка', error.error);
       },
     };
     this.productsService.fetchProducts(categories).subscribe(observer);
@@ -86,16 +86,16 @@ export class HomeComponent implements OnInit {
   private createProduct(payload: CreateProductPayload, onSuccess?: () => void) {
     this.addDialogLoading = true;
 
-    const observer: Partial<Observer<any>> = {
+    const observer: Partial<Observer<MessageWrapper>> = {
       next: (response: MessageWrapper) => {
-        this.notification.success('Success', response.message);
-        this.productsLoading = false;
+        this.notification.success('Операция успешно выполнена', response.message);
         this.addDialogVisible = false;
+        this.addDialogLoading = false;
         onSuccess?.();
       },
       error: (error: HttpErrorResponse) => {
-        this.productsLoading = false;
-        this.notification.error('Error', error.error);
+        this.addDialogLoading = false;
+        this.notification.error('Ошибка', error.error);
       },
     };
 

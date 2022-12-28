@@ -19,8 +19,11 @@
 }
 
 .home__card {
+  height: 100%;
   width: 300px;
-  height: fit-content;
+
+  display: flex;
+  flex-direction: column;
 }
 
 .home__card-photo {

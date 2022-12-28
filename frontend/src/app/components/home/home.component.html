@@ -23,12 +23,11 @@
       </div>
       <div *ngIf="products.length" class="home__grid">
         <nz-card *ngFor="let product of products" class="home__card" [nzCover]="coverTemplate"
-                 [nzActions]="[actionInfo, actionFavorite, actionCart]">
+                 [nzActions]="[actionInfo, actionFavorite, actionCart]" [nzBodyStyle]="{flex: 1}">
           <nz-card-meta
             [nzTitle]="product.price + ' ₽'"
             [nzDescription]="product.category + ' / ' + product.name"
           ></nz-card-meta>
-
           <ng-template #coverTemplate>
             <nz-empty class="home__card-photo" nzNotFoundContent="Нет фото"></nz-empty>
           </ng-template>
