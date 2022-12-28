@@ -21,7 +21,6 @@ export class CartComponent implements OnInit {
           description: 'Ноутбук серого цвета',
           price: 64990,
           category: 'Ноутбуки',
-          reviews: [],
         },
         {
           productId: 2,
@@ -29,7 +28,6 @@ export class CartComponent implements OnInit {
           description: 'Ноутбук черного цвета',
           price: 62990,
           category: 'Ноутбуки',
-          reviews: [],
         },
       ];
       this.loading = false;

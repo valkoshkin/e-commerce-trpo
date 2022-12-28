@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Product, Role, User } from '../../common/types';
+import {CreateReviewPayload, MessageWrapper, Product, Review, Role, User} from '../../common/types';
 import { TokenStorageService } from '../../services/token-storage/token-storage.service';
 import {
   UntypedFormBuilder,
@@ -21,7 +21,11 @@ export class ProductComponent implements OnInit {
 
   productId: number | undefined;
 
-  loading: boolean = false;
+  productLoading: boolean = false;
+
+  reviews: Review[] | undefined;
+
+  reviewsLoading: boolean = false;
 
   isAdmin: boolean = false;
 
@@ -30,6 +34,8 @@ export class ProductComponent implements OnInit {
   editDialogVisible: boolean = false;
 
   reviewDialogVisible: boolean = false;
+
+  reviewDialogLoading: boolean = false;
 
   editForm!: UntypedFormGroup;
 
@@ -46,19 +52,51 @@ export class ProductComponent implements OnInit {
     productId: number,
     onSuccess?: (product: Product) => void
   ) {
-    this.loading = true;
+    this.productLoading = true;
     const observer: Partial<Observer<Product>> = {
       next: (response: Product) => {
         this.product = response;
-        this.loading = false;
+        this.productLoading = false;
         onSuccess?.(response);
       },
       error: (error: HttpErrorResponse) => {
-        this.loading = false;
+        this.productLoading = false;
         this.notification.error('Ошибка', error.error);
       },
     };
     this.productsService.fetchProduct(productId).subscribe(observer);
+  }
+
+  private fetchReviews(productId: number, onSuccess?: (reviews: Review[]) => void) {
+    this.reviewsLoading = true;
+    const observer: Partial<Observer<Review[]>> = {
+      next: (response: Review[]) => {
+        this.reviews = response;
+        this.reviewsLoading = false;
+        onSuccess?.(response);
+      },
+      error: (error: HttpErrorResponse) => {
+        this.reviewsLoading = false;
+        this.notification.error('Ошибка', error.error);
+      },
+    };
+    this.productsService.fetchReviews(productId).subscribe(observer);
+  }
+
+  private createReview(payload: CreateReviewPayload, onSuccess?: () => void) {
+    this.reviewDialogLoading = true;
+    const observer: Partial<Observer<MessageWrapper>> = {
+      next: (messageWrapper: MessageWrapper) => {
+        this.notification.success('Операция успешно выполнена', messageWrapper.message);
+        this.reviewDialogLoading = false;
+        onSuccess?.();
+      },
+      error: (error: HttpErrorResponse) => {
+        this.reviewDialogLoading = false;
+        this.notification.error('Ошибка', error.error);
+      },
+    };
+    this.productsService.createReview(payload).subscribe(observer);
   }
 
   ngOnInit(): void {
@@ -80,6 +118,7 @@ export class ProductComponent implements OnInit {
           price: [product.price, [Validators.required]],
         });
       });
+      this.fetchReviews(this.productId);
     }
   }
 
@@ -90,6 +129,10 @@ export class ProductComponent implements OnInit {
 
   buildRatingText(): string {
     return '';
+  }
+
+  buildNzDateTime(timestamp: number): string {
+    return new Date(timestamp).toLocaleDateString('ru-RU');
   }
 
   // Delete dialog
@@ -152,8 +195,23 @@ export class ProductComponent implements OnInit {
 
   reviewDialogOk(): void {
     if (this.reviewForm.valid) {
-      console.log(this.reviewForm.value);
+      const payload: CreateReviewPayload = {
+        ...this.reviewForm.value,
+        timestamp: new Date().getTime(),
+        username: this.tokenStorage.getUser()!.username,
+        productId: this.productId
+      };
+      this.createReview(payload, () => {
+        this.reviewDialogVisible = false;
+        this.fetchReviews(this.productId!);
+      });
     } else {
+      Object.values(this.reviewForm.controls).forEach((control) => {
+        if (control.invalid) {
+          control.markAsDirty();
+          control.updateValueAndValidity({ onlySelf: true });
+        }
+      });
     }
   }
 

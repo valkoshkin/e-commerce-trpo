@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import {
-  CreateProductPayload,
+  CreateProductPayload, CreateReviewPayload,
   MessageWrapper,
-  Product,
+  Product, Review,
 } from '../../common/types';
 
 const API_PREFIX = '/api/v1';
@@ -33,11 +33,23 @@ export class ProductsService {
     return this.http.get(`${API_PREFIX}/products/${productId}`) as Observable<Product>;
   }
 
+  fetchReviews(productId: number): Observable<Review[]> {
+    return this.http.get(`${API_PREFIX}/products/${productId}/reviews`) as Observable<Review[]>;
+  }
+
   createProduct(payload: CreateProductPayload): Observable<MessageWrapper> {
     return this.http.post(`${API_PREFIX}/products/create`, payload, {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
       }),
     }) as Observable<MessageWrapper>;
+  }
+
+  createReview(payload: CreateReviewPayload): Observable<MessageWrapper> {
+    return this.http.post(`${API_PREFIX}/reviews/create`, payload, {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      }),
+    }) as Observable<MessageWrapper>
   }
 }

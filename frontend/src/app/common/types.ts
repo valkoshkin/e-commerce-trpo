@@ -1,5 +1,6 @@
 export enum Role {
-  USER = 'ROLE_USER', ADMIN = 'ROLE_ADMIN'
+  USER = 'ROLE_USER',
+  ADMIN = 'ROLE_ADMIN',
 }
 
 export interface MessageWrapper {
@@ -30,18 +31,23 @@ export interface Product {
   description: string;
   price: number;
   category: string;
-  reviews: Review[];
 }
 
-export type CreateProductPayload = Omit<Product, 'productId'>
+export type CreateProductPayload = Omit<Product, 'productId'>;
 
 export interface Review {
   reviewId: number;
   rating: number;
   content: string;
-  date: string;
+  timestamp: number;
   user: User;
   product: Product;
+}
+
+export interface CreateReviewPayload
+  extends Omit<Review, 'reviewId' | 'user' | 'product'> {
+  username: string;
+  productId: number;
 }
 
 export interface Order {

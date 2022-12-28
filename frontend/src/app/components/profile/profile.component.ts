@@ -37,7 +37,6 @@ export class ProfileComponent implements OnInit {
               name: 'Huawei Matebook D16',
               description: 'Ноутбук рабочий не сломанный',
               category: 'Ноутбуки',
-              reviews: [],
             },
             {
               productId: 2,
@@ -45,7 +44,6 @@ export class ProfileComponent implements OnInit {
               name: 'Huawei Matebook D14',
               description: 'Ноутбук сломанный',
               category: 'Ноутбуки',
-              reviews: [],
             },
           ],
         },
@@ -61,7 +59,6 @@ export class ProfileComponent implements OnInit {
               name: 'Huawei Matebook D16',
               description: 'Ноутбук рабочий не сломанный',
               category: 'Ноутбуки',
-              reviews: [],
             },
             {
               productId: 2,
@@ -69,7 +66,6 @@ export class ProfileComponent implements OnInit {
               name: 'Huawei Matebook D14',
               description: 'Ноутбук сломанный',
               category: 'Ноутбуки',
-              reviews: [],
             },
           ],
         },

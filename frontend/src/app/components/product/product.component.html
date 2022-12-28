@@ -1,4 +1,4 @@
-<nz-spin [nzSpinning]="loading">
+<nz-spin [nzSpinning]="productLoading && reviewsLoading">
   <div class="product__container">
     <div *ngIf="!!product" class="product__card">
       <div class="product__card-left">
@@ -16,23 +16,26 @@
         <nz-descriptions-item nzTitle="ID">{{product.productId}}</nz-descriptions-item>
       </nz-descriptions>
     </div>
-    <div *ngIf="!!product" class="product__reviews">
-      <div class="product__reviews-title">
-        <h2>Отзывы</h2>
-        <button nz-button nzType="default" nzShape="circle" nzSize="small" (click)="showReviewDialog()">
-          <span nz-icon nzType="plus" nzTheme="outline"></span>
-        </button>
+
+    <nz-spin [nzSpinning]="reviewsLoading">
+      <div *ngIf="!!product" class="product__reviews">
+        <div class="product__reviews-title">
+          <h2>Отзывы</h2>
+          <button nz-button nzType="default" nzShape="circle" nzSize="small" (click)="showReviewDialog()">
+            <span nz-icon nzType="plus" nzTheme="outline"></span>
+          </button>
+        </div>
+        <span *ngIf="!reviews?.length" style="margin-top: 12px">Отзывов пока нет</span>
+        <nz-comment *ngFor="let review of reviews" [nzAuthor]="buildAuthorName(review.user)"
+                    [nzDatetime]="buildNzDateTime(review.timestamp)">
+          <nz-comment-content>
+            <nz-progress nzSteps="5" [nzPercent]="20 * review.rating" nzStrokeColor="#1890ff"
+                         [nzFormat]="buildRatingText" nzStatus="normal"></nz-progress>
+            {{review.content}}
+          </nz-comment-content>
+        </nz-comment>
       </div>
-      <span *ngIf="!product.reviews.length" style="margin-top: 12px">Отзывов пока нет</span>
-      <nz-comment *ngFor="let review of product.reviews" [nzAuthor]="buildAuthorName(review.user)"
-                  [nzDatetime]="review.date">
-        <nz-comment-content>
-          <nz-progress nzSteps="5" [nzPercent]="20 * review.rating" nzStrokeColor="#1890ff"
-                       [nzFormat]="buildRatingText" nzStatus="normal"></nz-progress>
-          {{review.content}}
-        </nz-comment-content>
-      </nz-comment>
-    </div>
+    </nz-spin>
   </div>
 
   <nz-modal [(nzVisible)]="editDialogVisible" (nzOnCancel)="editDialogCancel()" (nzOnOk)="editDialogOk()"
@@ -80,7 +83,7 @@
 
   <nz-modal [(nzVisible)]="reviewDialogVisible" (nzOnCancel)="reviewDialogCancel()" (nzOnOk)="reviewDialogOk()"
             nzTitle="Добавить отзыв"
-            nzOkText="Добавить" nzCancelText="Отмена" nzCentered>
+            nzOkText="Добавить" nzCancelText="Отмена" nzCentered [nzOkLoading]="reviewDialogLoading">
     <ng-container *nzModalContent>
       <form nz-form [formGroup]="reviewForm" class="product__modal-form">
         <nz-form-item>
