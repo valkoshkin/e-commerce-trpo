@@ -6,6 +6,6 @@ import lombok.*;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserWithCredentialsDto extends UserDto {
+public class UserWithCredentialsDto extends BaseUserDto {
     private String password;
 }

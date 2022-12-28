@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserProfileDto extends UserDto {
-    private Long userId;
     private String role;
     private String token;
 

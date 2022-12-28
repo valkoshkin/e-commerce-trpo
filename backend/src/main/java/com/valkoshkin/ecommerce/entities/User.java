@@ -52,6 +52,15 @@ public class User {
         this.role = role;
     }
 
+    public User(String username, String password, String firstName, String lastName, String email, String address) {
+        this.username = username;
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.address = address;
+    }
+
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private List<Review> reviews;

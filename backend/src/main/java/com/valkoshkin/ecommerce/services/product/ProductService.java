@@ -1,6 +1,5 @@
 package com.valkoshkin.ecommerce.services.product;
 
-import com.valkoshkin.ecommerce.dto.product.ProductDto;
 import com.valkoshkin.ecommerce.entities.Product;
 
 import java.util.List;

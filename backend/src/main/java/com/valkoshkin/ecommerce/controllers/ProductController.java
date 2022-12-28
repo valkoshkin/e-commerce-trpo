@@ -3,6 +3,7 @@ package com.valkoshkin.ecommerce.controllers;
 import com.valkoshkin.ecommerce.dto.MessageDto;
 import com.valkoshkin.ecommerce.dto.product.CreateProductDto;
 import com.valkoshkin.ecommerce.dto.product.ProductDto;
+import com.valkoshkin.ecommerce.dto.review.ReviewDto;
 import com.valkoshkin.ecommerce.entities.Category;
 import com.valkoshkin.ecommerce.entities.Product;
 import com.valkoshkin.ecommerce.services.category.CategoryService;
@@ -29,6 +30,12 @@ public class ProductController {
     @GetMapping(path = "/{id}")
     public ProductDto getProduct(@PathVariable Long id) {
         return ProductDto.fromProduct(productService.getProductById(id));
+    }
+
+    @GetMapping(path = "/{productId}/reviews")
+    public List<ReviewDto> getReviewsForProduct(@PathVariable Long productId) {
+        Product product = productService.getProductById(productId);
+        return product.getReviews().stream().map(ReviewDto::fromReview).collect(Collectors.toList());
     }
 
     @PostMapping("/create")
