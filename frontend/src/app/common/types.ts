@@ -63,3 +63,8 @@ export interface Order {
   products: Product[];
   price: number;
 }
+
+export interface AddToCartResponse {
+  message: string;
+  products: Product[];
+}

@@ -42,7 +42,10 @@ public class Product {
     private List<Order> orders;
 
     @ManyToMany(mappedBy = "likedProducts")
-    private List<User> users;
+    private List<User> usersLike;
+
+    @ManyToMany(mappedBy = "cart")
+    private List<User> usersCart;
 
     public Product(String name, String description, double price, Category category) {
         this.name = name;

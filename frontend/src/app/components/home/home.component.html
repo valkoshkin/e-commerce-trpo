@@ -43,8 +43,9 @@
                 [nzTheme]="favorites.includes(product.productId) ? 'fill' : 'outline'"></span>
           </ng-template>
           <ng-template #actionCart>
-          <span (click)="addToCart(product.productId)" *ngIf="isAuthorized" nz-icon nzType="shopping-cart"
-                nzTheme="outline"></span>
+          <span (click)="addToCart(product.productId)" *ngIf="isAuthorized" nz-icon
+                [nzType]="isProductInCart(product.productId) ? 'check-circle' : 'shopping-cart'"
+                [nzTheme]="isProductInCart(product.productId) ? 'twotone' : 'outline'"></span>
           </ng-template>
         </nz-card>
       </div>

@@ -26,6 +26,7 @@ import {
   ShoppingCartOutline,
   InfoCircleOutline,
   PlusOutline,
+  CheckCircleTwoTone,
 } from '@ant-design/icons-angular/icons';
 import { ProfileComponent } from './components/profile/profile.component';
 import { UnauthorizedAccessOnlyGuard } from './guards/unauth-access-only.guard';
@@ -63,6 +64,7 @@ const icons = [
   ShoppingCartOutline,
   InfoCircleOutline,
   PlusOutline,
+  CheckCircleTwoTone,
 ];
 
 const nzConfig: NzConfig = {

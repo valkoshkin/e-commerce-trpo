@@ -6,6 +6,7 @@ import {
   Validators,
 } from '@angular/forms';
 import {
+  AddToCartResponse,
   CreateProductPayload,
   MessageWrapper,
   Product,
@@ -15,6 +16,7 @@ import { ProductsService } from '../../services/products/products.service';
 import { Observer } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { UserService } from '../../services/user/user.service';
 
 @Component({
   selector: 'app-home',
@@ -46,11 +48,14 @@ export class HomeComponent implements OnInit {
 
   addDialogLoading: boolean = false;
 
+  cart: Product[] = [];
+
   constructor(
     private tokenStorage: TokenStorageService,
     private fb: UntypedFormBuilder,
     private productsService: ProductsService,
-    private notification: NzNotificationService
+    private notification: NzNotificationService,
+    private userService: UserService
   ) {}
 
   private fetchCategories() {
@@ -88,7 +93,7 @@ export class HomeComponent implements OnInit {
 
     const observer: Partial<Observer<MessageWrapper>> = {
       next: (response: MessageWrapper) => {
-        this.notification.success('Операция успешно выполнена', response.message);
+        this.notification.success('Операция выполнена', response.message);
         this.addDialogVisible = false;
         this.addDialogLoading = false;
         onSuccess?.();
@@ -102,11 +107,25 @@ export class HomeComponent implements OnInit {
     this.productsService.createProduct(payload).subscribe(observer);
   }
 
+  private fetchCart(username: string) {
+    const observer: Partial<Observer<Product[]>> = {
+      next: (response: Product[]) => {
+        this.cart = response;
+      },
+      error: (error: HttpErrorResponse) => {
+        this.notification.error('Ошибка', error.error);
+      },
+    };
+
+    this.userService.fetchCart(username).subscribe(observer);
+  }
+
   ngOnInit(): void {
     const userFromStorage = this.tokenStorage.getUser();
     if (userFromStorage) {
       this.isAuthorized = true;
       this.isAdmin = userFromStorage.role === Role.ADMIN;
+      this.fetchCart(userFromStorage.username);
     }
 
     this.fetchCategories();
@@ -133,8 +152,24 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  addToCart(itemId: number): void {
-    console.log(`Add to cart item with id ${itemId}`);
+  addToCart(productId: number): void {
+    const observer: Partial<Observer<AddToCartResponse>> = {
+      next: (response: AddToCartResponse) => {
+        this.cart = response.products;
+        this.notification.success('Операция выполнена', response.message);
+      },
+      error: (error: HttpErrorResponse) => {
+        this.notification.error('Ошибка', error.error);
+      },
+    };
+    const username = this.tokenStorage.getUser()!.username;
+    this.userService.addToCart(username, productId).subscribe(observer);
+  }
+
+  isProductInCart(productId: number): boolean {
+    return this.cart.some(
+      (product: Product) => product.productId === productId
+    );
   }
 
   // Add dialog

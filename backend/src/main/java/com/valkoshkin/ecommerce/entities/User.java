@@ -71,10 +71,17 @@ public class User {
 
     @ManyToMany(cascade = { CascadeType.ALL })
     @JoinTable(
-            name = "users_products",
+            name = "likes",
             joinColumns = { @JoinColumn(name = "user_id") },
             inverseJoinColumns = { @JoinColumn(name = "product_id") })
     private List<Product> likedProducts;
+
+    @ManyToMany(cascade = { CascadeType.ALL })
+    @JoinTable(
+            name = "cart",
+            joinColumns = { @JoinColumn(name = "user_id") },
+            inverseJoinColumns = { @JoinColumn(name = "product_id") })
+    private List<Product> cart;
 
     public String toString() {
         return String.format("User {\nuserId=%d,\nfirstName=%s,\nlastName=%s,\nemail=%s,\naddress=%s,\nrole=%s\n}",
