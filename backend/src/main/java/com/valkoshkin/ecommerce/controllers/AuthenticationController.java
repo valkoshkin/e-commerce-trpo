@@ -1,16 +1,15 @@
 package com.valkoshkin.ecommerce.controllers;
 
 import com.valkoshkin.ecommerce.auth.JwtUtils;
-import com.valkoshkin.ecommerce.dto.LoginDto;
+import com.valkoshkin.ecommerce.dto.user.LoginDto;
 import com.valkoshkin.ecommerce.dto.MessageDto;
-import com.valkoshkin.ecommerce.dto.UserWithCredentialsDto;
+import com.valkoshkin.ecommerce.dto.user.UserWithCredentialsDto;
 import com.valkoshkin.ecommerce.entities.User;
 import com.valkoshkin.ecommerce.entities.enums.UserRole;
 import com.valkoshkin.ecommerce.mappers.UserMappers;
 import com.valkoshkin.ecommerce.repositories.UserRepository;
 import com.valkoshkin.ecommerce.services.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

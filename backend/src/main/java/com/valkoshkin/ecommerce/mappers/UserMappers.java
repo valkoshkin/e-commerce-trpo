@@ -1,7 +1,7 @@
 package com.valkoshkin.ecommerce.mappers;
 
-import com.valkoshkin.ecommerce.dto.UserProfileDto;
-import com.valkoshkin.ecommerce.dto.UserWithCredentialsDto;
+import com.valkoshkin.ecommerce.dto.user.UserProfileDto;
+import com.valkoshkin.ecommerce.dto.user.UserWithCredentialsDto;
 import com.valkoshkin.ecommerce.entities.User;
 import com.valkoshkin.ecommerce.entities.enums.UserRole;
 import com.valkoshkin.ecommerce.services.UserDetailsImpl;

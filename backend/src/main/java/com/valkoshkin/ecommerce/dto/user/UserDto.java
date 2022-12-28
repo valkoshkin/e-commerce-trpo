@@ -1,4 +1,4 @@
-package com.valkoshkin.ecommerce.dto;
+package com.valkoshkin.ecommerce.dto.user;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
