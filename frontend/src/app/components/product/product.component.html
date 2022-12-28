@@ -23,8 +23,8 @@
           <span nz-icon nzType="plus" nzTheme="outline"></span>
         </button>
       </div>
-      <span *ngIf="!reviews.length" style="margin-top: 12px">Отзывов пока нет</span>
-      <nz-comment *ngFor="let review of reviews" [nzAuthor]="buildAuthorName(review.author)"
+      <span *ngIf="!product.reviews.length" style="margin-top: 12px">Отзывов пока нет</span>
+      <nz-comment *ngFor="let review of product.reviews" [nzAuthor]="buildAuthorName(review.user)"
                   [nzDatetime]="review.date">
         <nz-comment-content>
           <nz-progress nzSteps="5" [nzPercent]="20 * review.rating" nzStrokeColor="#1890ff"

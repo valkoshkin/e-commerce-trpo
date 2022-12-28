@@ -30,6 +30,7 @@ export interface Product {
   description: string;
   price: number;
   category: string;
+  reviews: Review[];
 }
 
 export type CreateProductPayload = Omit<Product, 'productId'>
@@ -39,7 +40,7 @@ export interface Review {
   rating: number;
   content: string;
   date: string;
-  author: User;
+  user: User;
   product: Product;
 }
 

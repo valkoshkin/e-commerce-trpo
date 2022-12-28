@@ -29,6 +29,10 @@ export class ProductsService {
     >;
   }
 
+  fetchProduct(productId: number): Observable<Product> {
+    return this.http.get(`${API_PREFIX}/products/${productId}`) as Observable<Product>;
+  }
+
   createProduct(payload: CreateProductPayload): Observable<MessageWrapper> {
     return this.http.post(`${API_PREFIX}/products/create`, payload, {
       headers: new HttpHeaders({

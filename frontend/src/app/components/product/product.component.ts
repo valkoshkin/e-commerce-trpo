@@ -1,7 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { Product, Review, Role, User } from '../../common/types';
+import { Product, Role, User } from '../../common/types';
 import { TokenStorageService } from '../../services/token-storage/token-storage.service';
-import {UntypedFormBuilder, UntypedFormGroup, Validators} from '@angular/forms';
+import {
+  UntypedFormBuilder,
+  UntypedFormGroup,
+  Validators,
+} from '@angular/forms';
+import { ProductsService } from '../../services/products/products.service';
+import { Observer } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 @Component({
   selector: 'app-product',
@@ -11,9 +19,9 @@ import {UntypedFormBuilder, UntypedFormGroup, Validators} from '@angular/forms';
 export class ProductComponent implements OnInit {
   product: Product | undefined;
 
-  reviews: Review[] = [];
+  productId: number | undefined;
 
-  loading: boolean = true;
+  loading: boolean = false;
 
   isAdmin: boolean = false;
 
@@ -29,51 +37,50 @@ export class ProductComponent implements OnInit {
 
   constructor(
     private tokenStorage: TokenStorageService,
-    private fb: UntypedFormBuilder
+    private fb: UntypedFormBuilder,
+    private productsService: ProductsService,
+    private notification: NzNotificationService
   ) {} // + profile service
 
+  private fetchProduct(
+    productId: number,
+    onSuccess?: (product: Product) => void
+  ) {
+    this.loading = true;
+    const observer: Partial<Observer<Product>> = {
+      next: (response: Product) => {
+        this.product = response;
+        this.loading = false;
+        onSuccess?.(response);
+      },
+      error: (error: HttpErrorResponse) => {
+        this.loading = false;
+        this.notification.error('Ошибка', error.error);
+      },
+    };
+    this.productsService.fetchProduct(productId).subscribe(observer);
+  }
+
   ngOnInit(): void {
-    setTimeout(() => {
-      this.loading = false;
+    this.isAdmin = this.tokenStorage.getUser()?.role === Role.ADMIN;
 
-      this.product = {
-        productId: 1,
-        name: 'Huawei Matebook D16',
-        description: 'Ноутбук серого цвета',
-        price: 64990,
-        category: 'Ноутбуки',
-      };
-      // this.reviews = [
-      //   {
-      //     reviewId: 1,
-      //     rating: 5,
-      //     content: 'Норм тема',
-      //     date: '5 минут назад',
-      //     product: this.product,
-      //     author: this.tokenStorage.getUser() || ({} as User),
-      //   },
-      //   {
-      //     reviewId: 1,
-      //     rating: 3,
-      //     content: 'Так себе',
-      //     date: '10 минут назад',
-      //     product: this.product,
-      //     author: this.tokenStorage.getUser() || ({} as User),
-      //   },
-      // ];
-      this.isAdmin = this.tokenStorage.getUser()?.role === Role.ADMIN;
+    this.reviewForm = this.fb.group({
+      content: [undefined, []],
+      rating: [null, [Validators.required]],
+    });
 
-      this.editForm = this.fb.group({
-        name: [this.product!.name, [Validators.required]],
-        description: [this.product!.description, [Validators.required]],
-        price: [this.product!.price, [Validators.required]],
+    const idFromUrl = new URLSearchParams(location.search).get('id');
+    this.productId = idFromUrl ? +idFromUrl : undefined;
+
+    if (this.productId) {
+      this.fetchProduct(this.productId, (product: Product) => {
+        this.editForm = this.fb.group({
+          name: [product.name, [Validators.required]],
+          description: [product.description, [Validators.required]],
+          price: [product.price, [Validators.required]],
+        });
       });
-
-      this.reviewForm = this.fb.group({
-        content: [undefined, []],
-        rating: [null, [Validators.required]],
-      });
-    }, 1000);
+    }
   }
 
   buildAuthorName(user: User): string {
@@ -147,7 +154,6 @@ export class ProductComponent implements OnInit {
     if (this.reviewForm.valid) {
       console.log(this.reviewForm.value);
     } else {
-
     }
   }
 
