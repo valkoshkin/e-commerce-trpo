@@ -2,6 +2,10 @@ export enum Role {
   USER = 'ROLE_USER', ADMIN = 'ROLE_ADMIN'
 }
 
+export interface MessageWrapper {
+  message: string;
+}
+
 export interface LoginPayload {
   username: string;
   password: string;
@@ -27,6 +31,8 @@ export interface Product {
   price: number;
   category: string;
 }
+
+export type CreateProductPayload = Omit<Product, 'productId'>
 
 export interface Review {
   reviewId: number;

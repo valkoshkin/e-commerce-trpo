@@ -1,15 +1,20 @@
-import {Component, OnInit} from '@angular/core';
-import {TokenStorageService} from '../../services/token-storage/token-storage.service';
+import { Component, OnInit } from '@angular/core';
+import { TokenStorageService } from '../../services/token-storage/token-storage.service';
 import {
   UntypedFormBuilder,
   UntypedFormGroup,
   Validators,
 } from '@angular/forms';
-import {Product, Role} from '../../common/types';
-import {ProductsService} from "../../services/products/products.service";
-import {Observer} from "rxjs";
-import {HttpErrorResponse} from "@angular/common/http";
-import {NzNotificationService} from "ng-zorro-antd/notification";
+import {
+  CreateProductPayload,
+  MessageWrapper,
+  Product,
+  Role,
+} from '../../common/types';
+import { ProductsService } from '../../services/products/products.service';
+import { Observer } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 @Component({
   selector: 'app-home',
@@ -39,44 +44,62 @@ export class HomeComponent implements OnInit {
 
   addDialogVisible: boolean = false;
 
+  addDialogLoading: boolean = false;
+
   constructor(
     private tokenStorage: TokenStorageService,
     private fb: UntypedFormBuilder,
     private productsService: ProductsService,
     private notification: NzNotificationService
-  ) {
-  }
+  ) {}
 
   private fetchCategories() {
     this.categoriesLoading = true;
     const observer: Partial<Observer<any>> = {
-        next: (response: string[]) => {
-          this.categories = response;
-          this.categoriesLoading = false;
-        },
-        error: (error: HttpErrorResponse) => {
-          this.categoriesLoading = false;
-          this.notification.error('Error', error.error);
-        }
-      }
-    ;
+      next: (response: string[]) => {
+        this.categories = response;
+        this.categoriesLoading = false;
+      },
+      error: (error: HttpErrorResponse) => {
+        this.categoriesLoading = false;
+        this.notification.error('Error', error.error);
+      },
+    };
     this.productsService.fetchCategories().subscribe(observer);
   }
 
   private fetchProducts(categories: string[]) {
     this.productsLoading = true;
     const observer: Partial<Observer<any>> = {
-        next: (response: Product[]) => {
-          this.products = response;
-          this.productsLoading = false;
-        },
-        error: (error: HttpErrorResponse) => {
-          this.productsLoading = false;
-          this.notification.error('Error', error.error);
-        }
-      }
-    ;
+      next: (response: Product[]) => {
+        this.products = response;
+        this.productsLoading = false;
+      },
+      error: (error: HttpErrorResponse) => {
+        this.productsLoading = false;
+        this.notification.error('Error', error.error);
+      },
+    };
     this.productsService.fetchProducts(categories).subscribe(observer);
+  }
+
+  private createProduct(payload: CreateProductPayload, onSuccess?: () => void) {
+    this.addDialogLoading = true;
+
+    const observer: Partial<Observer<any>> = {
+      next: (response: MessageWrapper) => {
+        this.notification.success('Success', response.message);
+        this.productsLoading = false;
+        this.addDialogVisible = false;
+        onSuccess?.();
+      },
+      error: (error: HttpErrorResponse) => {
+        this.productsLoading = false;
+        this.notification.error('Error', error.error);
+      },
+    };
+
+    this.productsService.createProduct(payload).subscribe(observer);
   }
 
   ngOnInit(): void {
@@ -125,14 +148,25 @@ export class HomeComponent implements OnInit {
   }
 
   addDialogOk(): void {
-    console.log(`Add product`);
+    if (this.addForm.valid) {
+      this.createProduct(this.addForm.value, () => {
+        this.fetchProducts(this.selectedCategories);
+      });
+    } else {
+      Object.values(this.addForm.controls).forEach((control) => {
+        if (control.invalid) {
+          control.markAsDirty();
+          control.updateValueAndValidity({ onlySelf: true });
+        }
+      });
+    }
   }
 
-  editDialogCancel(): void {
+  addDialogCancel(): void {
     this.hideAddDialog();
   }
 
-  afterEditDialogClose(): void {
+  afterAddDialogClose(): void {
     this.addForm = this.fb.group({
       name: [null, [Validators.required]],
       description: [null, [Validators.required]],
