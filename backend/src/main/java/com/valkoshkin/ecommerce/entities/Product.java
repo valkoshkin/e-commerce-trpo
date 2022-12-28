@@ -1,6 +1,7 @@
 package com.valkoshkin.ecommerce.entities;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
@@ -12,6 +13,7 @@ import java.util.List;
 @Accessors(chain = true)
 @Entity
 @Table(name = "products")
+@NoArgsConstructor
 public class Product {
 
     @Id
@@ -41,6 +43,13 @@ public class Product {
 
     @ManyToMany(mappedBy = "likedProducts")
     private List<User> users;
+
+    public Product(String name, String description, double price, Category category) {
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.category = category;
+    }
 
     public String toString() {
         return String.format("Product {\nproductId=%d,\nname=%s,\ndescription=%s,\nprice=%f,\ncategory=%s\n}",

@@ -17,4 +17,10 @@ public class CategoryServiceImpl implements CategoryService {
     public List<String> getAllCategories() {
         return categoryRepository.findAll().stream().map(Category::getName).collect(Collectors.toList());
     }
+
+    @Override
+    public Category getCategoryByName(String name) {
+        return categoryRepository.findFirstByName(name);
+    }
+
 }

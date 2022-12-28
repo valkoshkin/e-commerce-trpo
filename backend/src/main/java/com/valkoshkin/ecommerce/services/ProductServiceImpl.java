@@ -1,6 +1,7 @@
 package com.valkoshkin.ecommerce.services;
 
-import com.valkoshkin.ecommerce.dto.ProductDto;
+import com.valkoshkin.ecommerce.dto.product.ProductDto;
+import com.valkoshkin.ecommerce.entities.Product;
 import com.valkoshkin.ecommerce.repositories.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,5 +18,10 @@ public class ProductServiceImpl implements ProductService {
     public List<ProductDto> getAllProducts(List<String> categories) {
         return (categories != null && categories.size() > 0 ? productRepository.findAllByCategoryNameIn(categories) : productRepository.findAll())
                 .stream().map(ProductDto::fromProduct).collect(Collectors.toList());
+    }
+
+    @Override
+    public void save(Product product) {
+        productRepository.save(product);
     }
 }

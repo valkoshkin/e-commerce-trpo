@@ -1,21 +1,28 @@
-package com.valkoshkin.ecommerce.dto;
+package com.valkoshkin.ecommerce.dto.product;
 
 import com.valkoshkin.ecommerce.entities.Product;
 import com.valkoshkin.ecommerce.entities.Review;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.List;
 
 @Data
-@AllArgsConstructor
-public class ProductDto {
+@EqualsAndHashCode(callSuper = true)
+@AllArgsConstructor()
+public class ProductDto extends CreateProductDto {
     private Long productId;
-    private String name;
-    private String description;
-    private double price;
-    private String category;
     private List<Review> reviews;
+
+    public ProductDto(Long productId, String name, String description, double price, String category, List<Review> reviews) {
+        this.productId = productId;
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.category = category;
+        this.reviews = reviews;
+    }
 
     public static ProductDto fromProduct(Product product) {
         return new ProductDto(
