@@ -1,5 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import {CreateReviewPayload, EditProductPayload, MessageWrapper, Product, Review, Role, User} from '../../common/types';
+import {
+  AddToCartResponse,
+  AddToFavoritesResponse,
+  CreateReviewPayload,
+  EditProductPayload, LinkedProducts,
+  MessageWrapper,
+  Product,
+  Review,
+  Role,
+  User
+} from '../../common/types';
 import { TokenStorageService } from '../../services/token-storage/token-storage.service';
 import {
   UntypedFormBuilder,
@@ -11,6 +21,7 @@ import { Observer } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import {Router} from "@angular/router";
+import {UserService} from "../../services/user/user.service";
 
 @Component({
   selector: 'app-product',
@@ -32,6 +43,10 @@ export class ProductComponent implements OnInit {
 
   isAdmin: boolean = false;
 
+  favorites: Product[] = [];
+
+  cart: Product[] = [];
+
   deleteDialogVisible: boolean = false;
 
   editDialogVisible: boolean = false;
@@ -47,8 +62,9 @@ export class ProductComponent implements OnInit {
     private fb: UntypedFormBuilder,
     private productsService: ProductsService,
     private notification: NzNotificationService,
-    private router: Router
-  ) {} // + profile service
+    private router: Router,
+    private userService: UserService
+  ) {}
 
   private fetchProduct(
     productId: number,
@@ -131,11 +147,28 @@ export class ProductComponent implements OnInit {
       },
     };
     this.productsService.editProduct(productId, payload).subscribe(observer);
+  }
 
+  private fetchLinkedProducts(username: string) {
+    const observer: Partial<Observer<LinkedProducts>> = {
+      next: (response: LinkedProducts) => {
+        this.cart = response.cart;
+        this.favorites = response.favorites;
+      },
+      error: (error: HttpErrorResponse) => {
+        this.notification.error('Ошибка', error.error);
+      },
+    };
+
+    this.userService.fetchLinkedProducts(username).subscribe(observer);
   }
 
   ngOnInit(): void {
-    this.isAdmin = this.tokenStorage.getUser()?.role === Role.ADMIN;
+    const userFromStorage = this.tokenStorage.getUser();
+    if (userFromStorage) {
+      this.isAdmin = userFromStorage.role === Role.ADMIN;
+      this.fetchLinkedProducts(userFromStorage.username);
+    }
 
     this.reviewForm = this.fb.group({
       content: [undefined, []],
@@ -155,6 +188,44 @@ export class ProductComponent implements OnInit {
       });
       this.fetchReviews(this.productId);
     }
+  }
+
+  addToFavorites(): void {
+    const observer: Partial<Observer<AddToFavoritesResponse>> = {
+      next: (response: AddToFavoritesResponse) => {
+        this.favorites = response.favorites;
+      },
+      error: (error: HttpErrorResponse) => {
+        this.notification.error('Ошибка', error.error);
+      },
+    };
+    const username = this.tokenStorage.getUser()!.username;
+    this.userService.addToFavorites(username, this.productId!).subscribe(observer);
+  }
+
+  isProductInFavorites(): boolean {
+    return this.favorites.some(
+      (product: Product) => product.productId === this.productId
+    );
+  }
+
+  addToCart(): void {
+    const observer: Partial<Observer<AddToCartResponse>> = {
+      next: (response: AddToCartResponse) => {
+        this.cart = response.cart;
+      },
+      error: (error: HttpErrorResponse) => {
+        this.notification.error('Ошибка', error.error);
+      },
+    };
+    const username = this.tokenStorage.getUser()!.username;
+    this.userService.addToCart(username, this.productId!).subscribe(observer);
+  }
+
+  isProductInCart(): boolean {
+    return this.cart.some(
+      (product: Product) => product.productId === this.productId
+    );
   }
 
   buildAuthorName(user: User): string {

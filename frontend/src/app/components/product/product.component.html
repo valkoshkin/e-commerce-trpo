@@ -3,8 +3,9 @@
     <div *ngIf="!!product" class="product__card">
       <div class="product__card-left">
         <nz-empty class="product__photo" nzNotFoundContent="Нет фото"></nz-empty>
-        <button nz-button nzType="primary">Добавить в корзину</button>
-        <button nz-button nzType="default">Добавить в избранное</button>
+        <button nz-button nzType="primary" (click)="addToCart()">{{isProductInCart() ? 'Убрать из корзины' : 'Добавить в коризну'}}</button>
+        <button nz-button (click)="addToFavorites()"
+                nzType="default">{{isProductInFavorites() ? 'Убрать из избранного' : 'Добавить в избранное'}}</button>
         <nz-divider class="product__card-divider" *ngIf="isAdmin" nzPlain></nz-divider>
         <button *ngIf="isAdmin" nz-button nzType="default" (click)="showEditDialog()">Редактировать</button>
         <button *ngIf="isAdmin" nz-button nzType="default" nzDanger (click)="showDeleteDialog()">Удалить</button>
