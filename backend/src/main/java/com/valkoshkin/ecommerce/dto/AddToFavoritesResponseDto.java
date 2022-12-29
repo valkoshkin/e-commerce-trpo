@@ -8,7 +8,6 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
-public class AddToCartResponseDto {
-    private String message;
-    private List<ProductDto> cart;
+public class AddToFavoritesResponseDto {
+    private List<ProductDto> favorites;
 }

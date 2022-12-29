@@ -1,6 +1,8 @@
 package com.valkoshkin.ecommerce.controllers;
 
 import com.valkoshkin.ecommerce.dto.AddToCartResponseDto;
+import com.valkoshkin.ecommerce.dto.AddToFavoritesResponseDto;
+import com.valkoshkin.ecommerce.dto.LinkedProductsDto;
 import com.valkoshkin.ecommerce.dto.product.ProductDto;
 import com.valkoshkin.ecommerce.entities.Product;
 import com.valkoshkin.ecommerce.entities.User;
@@ -9,7 +11,6 @@ import com.valkoshkin.ecommerce.services.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
@@ -42,9 +43,26 @@ public class UserController {
                 .stream().map(ProductDto::fromProduct).collect(Collectors.toList()));
     }
 
-    @GetMapping("/{username}/cart")
-    public List<ProductDto> getCart(@PathVariable String username) {
+    @PostMapping("/{username}/favorites")
+    public AddToFavoritesResponseDto addToFavorites(@PathVariable String username, @RequestBody Long productId) {
         User user = userService.getUserByUsername(username);
-        return user.getCart().stream().map(ProductDto::fromProduct).collect(Collectors.toList());
+        Product product = productService.getProductById(productId);
+
+        if (user.getLikedProducts().contains(product)) {
+            user.getLikedProducts().remove(product);
+        } else {
+            user.getLikedProducts().add(product);
+        }
+        userService.save(user);
+
+        return new AddToFavoritesResponseDto(user.getLikedProducts().stream().map(ProductDto::fromProduct).collect(Collectors.toList()));
+    }
+
+    @GetMapping("/{username}/linked-products")
+    public LinkedProductsDto getLinkedProducts(@PathVariable String username) {
+        User user = userService.getUserByUsername(username);
+        return new LinkedProductsDto(
+                user.getLikedProducts().stream().map(ProductDto::fromProduct).collect(Collectors.toList()),
+                user.getCart().stream().map(ProductDto::fromProduct).collect(Collectors.toList()));
     }
 }

@@ -7,7 +7,9 @@ import {
 } from '@angular/forms';
 import {
   AddToCartResponse,
+  AddToFavoritesResponse,
   CreateProductPayload,
+  LinkedProducts,
   MessageWrapper,
   Product,
   Role,
@@ -28,8 +30,6 @@ export class HomeComponent implements OnInit {
 
   productsLoading: boolean = false;
 
-  favorites: number[] = [];
-
   categories: string[] = [];
 
   categoriesLoading: boolean = false;
@@ -49,6 +49,8 @@ export class HomeComponent implements OnInit {
   addDialogLoading: boolean = false;
 
   cart: Product[] = [];
+
+  favorites: Product[] = [];
 
   constructor(
     private tokenStorage: TokenStorageService,
@@ -107,17 +109,18 @@ export class HomeComponent implements OnInit {
     this.productsService.createProduct(payload).subscribe(observer);
   }
 
-  private fetchCart(username: string) {
-    const observer: Partial<Observer<Product[]>> = {
-      next: (response: Product[]) => {
-        this.cart = response;
+  private fetchLinkedProducts(username: string) {
+    const observer: Partial<Observer<LinkedProducts>> = {
+      next: (response: LinkedProducts) => {
+        this.cart = response.cart;
+        this.favorites = response.favorites;
       },
       error: (error: HttpErrorResponse) => {
         this.notification.error('Ошибка', error.error);
       },
     };
 
-    this.userService.fetchCart(username).subscribe(observer);
+    this.userService.fetchLinkedProducts(username).subscribe(observer);
   }
 
   ngOnInit(): void {
@@ -125,7 +128,7 @@ export class HomeComponent implements OnInit {
     if (userFromStorage) {
       this.isAuthorized = true;
       this.isAdmin = userFromStorage.role === Role.ADMIN;
-      this.fetchCart(userFromStorage.username);
+      this.fetchLinkedProducts(userFromStorage.username);
     }
 
     this.fetchCategories();
@@ -137,25 +140,34 @@ export class HomeComponent implements OnInit {
       price: [null, [Validators.required]],
       category: [null, [Validators.required]],
     });
-
-    // this.favorites = [2, 3];
   }
 
-  toggleFavorite(itemId: number): void {
-    const index = this.favorites.indexOf(itemId);
-    if (index == -1) {
-      console.log(`Add to favorite item with id ${itemId}`);
-      this.favorites.push(itemId);
-    } else {
-      console.log(`Remove from favorite item with id ${itemId}`);
-      this.favorites.splice(index, 1);
-    }
+  addToFavorites(productId: number): void {
+    const observer: Partial<Observer<AddToFavoritesResponse>> = {
+      next: (response: AddToFavoritesResponse) => {
+        this.favorites = response.favorites;
+        if (this.favoritesChecked) {
+          this.products = this.favorites;
+        }
+      },
+      error: (error: HttpErrorResponse) => {
+        this.notification.error('Ошибка', error.error);
+      },
+    };
+    const username = this.tokenStorage.getUser()!.username;
+    this.userService.addToFavorites(username, productId).subscribe(observer);
+  }
+
+  isProductInFavorites(productId: number): boolean {
+    return this.favorites.some(
+      (product: Product) => product.productId === productId
+    );
   }
 
   addToCart(productId: number): void {
     const observer: Partial<Observer<AddToCartResponse>> = {
       next: (response: AddToCartResponse) => {
-        this.cart = response.products;
+        this.cart = response.cart;
         this.notification.success('Операция выполнена', response.message);
       },
       error: (error: HttpErrorResponse) => {
@@ -216,6 +228,9 @@ export class HomeComponent implements OnInit {
     this.favoritesChecked = checked;
     if (checked) {
       this.selectedCategories = [];
+      this.products = this.favorites;
+    } else {
+      this.fetchProducts([]);
     }
   }
 

@@ -37,10 +37,10 @@
             </a>
           </ng-template>
           <ng-template #actionFavorite>
-          <span (click)="toggleFavorite(product.productId)"
+          <span (click)="addToFavorites(product.productId)"
                 *ngIf="isAuthorized" nz-icon
                 nzType="heart"
-                [nzTheme]="favorites.includes(product.productId) ? 'fill' : 'outline'"></span>
+                [nzTheme]="isProductInFavorites(product.productId) ? 'fill' : 'outline'"></span>
           </ng-template>
           <ng-template #actionCart>
           <span (click)="addToCart(product.productId)" *ngIf="isAuthorized" nz-icon

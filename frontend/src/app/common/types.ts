@@ -66,5 +66,15 @@ export interface Order {
 
 export interface AddToCartResponse {
   message: string;
-  products: Product[];
+  cart: Product[];
+}
+
+export interface AddToFavoritesResponse {
+  message: string;
+  favorites: Product[];
+}
+
+export interface LinkedProducts {
+  favorites: Product[];
+  cart: Product[];
 }
