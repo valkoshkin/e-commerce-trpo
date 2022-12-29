@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { SERVER_ORIGIN } from '../../common/constants';
 import { Observable } from 'rxjs';
 import {
   LoginPayload,
@@ -23,7 +22,7 @@ export class AuthService {
 
   login(payload: LoginPayload): Observable<any> {
     return this.http.post(
-      `${SERVER_ORIGIN}${API_URL}/login`,
+      `${API_URL}/login`,
       payload,
       requestOptions
     );
@@ -33,7 +32,7 @@ export class AuthService {
 
   register(payload: RegisterPayload): Observable<MessageWrapper> {
     return this.http.post(
-      `${SERVER_ORIGIN}${API_URL}/register`,
+      `${API_URL}/register`,
       payload,
       requestOptions
     ) as Observable<MessageWrapper>;

@@ -44,7 +44,7 @@ public class WebSecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests()
                 .antMatchers("/api/v1/auth/**", "/api/v1/health/**", "/api/v1/categories", "/api/v1/products/**").permitAll()
-                .antMatchers("/*.js", "/favicon.ico").permitAll()
+                .antMatchers("/*.js", "/favicon.ico", "/*.css").permitAll()
                 .antMatchers("/", "/home", "/login", "/logout").permitAll()
                 .anyRequest().authenticated();
         http.addFilterBefore(authJwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
