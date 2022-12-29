@@ -4,12 +4,12 @@
       <div class="product__card-left">
         <nz-empty class="product__photo" nzNotFoundContent="Нет фото"></nz-empty>
         <button *ngIf="isAuthorized" nz-button nzType="primary"
-                (click)="addToCart()">{{isProductInCart() ? 'Убрать из корзины' : 'Добавить в коризну'}}</button>
+                (click)="addToCart()">{{isProductInCart() ? 'Убрать из корзины' : 'Добавить в корзину'}}</button>
         <button *ngIf="isAuthorized" nz-button (click)="addToFavorites()"
                 nzType="default">{{isProductInFavorites() ? 'Убрать из избранного' : 'Добавить в избранное'}}</button>
         <nz-divider class="product__card-divider" *ngIf="isAdmin" nzPlain></nz-divider>
         <button *ngIf="isAdmin" nz-button nzType="default" (click)="showEditDialog()">Редактировать</button>
-        <button *ngIf="isAdmin" nz-button nzType="default" nzDanger (click)="showDeleteDialog()">Удалить</button>
+<!--        <button *ngIf="isAdmin" nz-button nzType="default" nzDanger (click)="showDeleteDialog()">Удалить</button>-->
       </div>
       <nz-descriptions [nzTitle]="product.name" [nzColumn]="1" nzBordered>
         <nz-descriptions-item nzTitle="Цена">{{product.price}} ₽</nz-descriptions-item>
@@ -19,7 +19,7 @@
       </nz-descriptions>
     </div>
 
-    <nz-spin [nzSpinning]="reviewsLoading">
+    <nz-spin [nzSpinning]="reviewsLoading && !productLoading">
       <div *ngIf="!!product && !productLoading" class="product__reviews">
         <div class="product__reviews-title">
           <h2>Отзывы</h2>
@@ -85,7 +85,7 @@
   </nz-modal>
 
   <nz-modal [(nzVisible)]="reviewDialogVisible" (nzOnCancel)="reviewDialogCancel()" (nzOnOk)="reviewDialogOk()"
-            nzTitle="Добавить отзыв"
+            nzTitle="Добавить отзыв" (nzAfterClose)="afterReviewDialogClose()"
             nzOkText="Добавить" nzCancelText="Отмена" nzCentered [nzOkLoading]="dialogLoading">
     <ng-container *nzModalContent>
       <form nz-form [formGroup]="reviewForm" class="product__modal-form">

@@ -337,6 +337,13 @@ export class ProductComponent implements OnInit {
     }
   }
 
+  afterReviewDialogClose(): void {
+    this.reviewForm = this.fb.group({
+      content: [undefined, []],
+      rating: [null, [Validators.required]],
+    });
+  }
+
   reviewDialogCancel(): void {
     this.hideReviewDialog();
   }
