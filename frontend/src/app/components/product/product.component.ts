@@ -43,6 +43,8 @@ export class ProductComponent implements OnInit {
 
   isAdmin: boolean = false;
 
+  isAuthorized: boolean = false;
+
   favorites: Product[] = [];
 
   cart: Product[] = [];
@@ -79,7 +81,7 @@ export class ProductComponent implements OnInit {
       },
       error: (error: HttpErrorResponse) => {
         this.productLoading = false;
-        this.notification.error('Ошибка', error.error);
+        this.notification.error('Ошибка', error.error.message || error.message);
       },
     };
     this.productsService.fetchProduct(productId).subscribe(observer);
@@ -95,7 +97,7 @@ export class ProductComponent implements OnInit {
       },
       error: (error: HttpErrorResponse) => {
         this.reviewsLoading = false;
-        this.notification.error('Ошибка', error.error);
+        this.notification.error('Ошибка', error.error.message || error.message);
       },
     };
     this.productsService.fetchReviews(productId).subscribe(observer);
@@ -111,7 +113,7 @@ export class ProductComponent implements OnInit {
       },
       error: (error: HttpErrorResponse) => {
         this.dialogLoading = false;
-        this.notification.error('Ошибка', error.error);
+        this.notification.error('Ошибка', error.error.message || error.message);
       },
     };
     this.productsService.createReview(payload).subscribe(observer);
@@ -127,7 +129,7 @@ export class ProductComponent implements OnInit {
       },
       error: (error: HttpErrorResponse) => {
         this.dialogLoading = false;
-        this.notification.error('Ошибка', error.error);
+        this.notification.error('Ошибка', error.error.message || error.message);
       },
     };
     this.productsService.deleteProduct(productId).subscribe(observer);
@@ -143,7 +145,7 @@ export class ProductComponent implements OnInit {
       },
       error: (error: HttpErrorResponse) => {
         this.dialogLoading = false;
-        this.notification.error('Ошибка', error.error);
+        this.notification.error('Ошибка', error.error.message || error.message);
       },
     };
     this.productsService.editProduct(productId, payload).subscribe(observer);
@@ -156,7 +158,7 @@ export class ProductComponent implements OnInit {
         this.favorites = response.favorites;
       },
       error: (error: HttpErrorResponse) => {
-        this.notification.error('Ошибка', error.error);
+        this.notification.error('Ошибка', error.error.message || error.message);
       },
     };
 
@@ -166,6 +168,7 @@ export class ProductComponent implements OnInit {
   ngOnInit(): void {
     const userFromStorage = this.tokenStorage.getUser();
     if (userFromStorage) {
+      this.isAuthorized = true;
       this.isAdmin = userFromStorage.role === Role.ADMIN;
       this.fetchLinkedProducts(userFromStorage.username);
     }
@@ -196,7 +199,7 @@ export class ProductComponent implements OnInit {
         this.favorites = response.favorites;
       },
       error: (error: HttpErrorResponse) => {
-        this.notification.error('Ошибка', error.error);
+        this.notification.error('Ошибка', error.error.message || error.message);
       },
     };
     const username = this.tokenStorage.getUser()!.username;
@@ -215,7 +218,7 @@ export class ProductComponent implements OnInit {
         this.cart = response.cart;
       },
       error: (error: HttpErrorResponse) => {
-        this.notification.error('Ошибка', error.error);
+        this.notification.error('Ошибка', error.error.message || error.message);
       },
     };
     const username = this.tokenStorage.getUser()!.username;

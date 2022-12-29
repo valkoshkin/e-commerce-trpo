@@ -34,7 +34,7 @@ export class CartComponent implements OnInit {
       },
       error: (error: HttpErrorResponse) => {
         this.loading = false;
-        this.notification.error('Ошибка', error.error);
+        this.notification.error('Ошибка', error.error.message || error.message);
       },
     };
 
@@ -58,7 +58,7 @@ export class CartComponent implements OnInit {
         this.favorites = response.favorites;
       },
       error: (error: HttpErrorResponse) => {
-        this.notification.error('Ошибка', error.error);
+        this.notification.error('Ошибка', error.error.message || error.message);
       },
     };
     const username = this.tokenStorage.getUser()!.username;
@@ -71,7 +71,7 @@ export class CartComponent implements OnInit {
         this.cart = response.cart;
       },
       error: (error: HttpErrorResponse) => {
-        this.notification.error('Ошибка', error.error);
+        this.notification.error('Ошибка', error.error.message || error.message);
       },
     };
     const username = this.tokenStorage.getUser()!.username;

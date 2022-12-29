@@ -6,8 +6,10 @@ import {
 } from '@angular/forms';
 import { AuthService } from '../../services/auth/auth.service';
 import { Observer } from 'rxjs';
-import {NzNotificationService} from "ng-zorro-antd/notification";
-import {HttpErrorResponse} from "@angular/common/http";
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { HttpErrorResponse } from '@angular/common/http';
+import { MessageWrapper } from '../../common/types';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-register',
@@ -22,7 +24,8 @@ export class RegisterComponent implements OnInit {
   constructor(
     private fb: UntypedFormBuilder,
     private authService: AuthService,
-    private notification: NzNotificationService
+    private notification: NzNotificationService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -39,17 +42,23 @@ export class RegisterComponent implements OnInit {
   submitForm(): void {
     if (this.registrationForm.valid) {
       this.loading = true;
-      const observer: Partial<Observer<any>> = {
-        next: (response: string) => {
+      const observer: Partial<Observer<MessageWrapper>> = {
+        next: (response: MessageWrapper) => {
           this.loading = false;
-          this.notification.success('Success registration', response);
+          this.notification.success('Операция выполнена', response.message);
+          this.router.navigateByUrl('/login').then();
         },
         error: (error: HttpErrorResponse) => {
           this.loading = false;
-          this.notification.error('Error', error.error);
+          this.notification.error(
+            'Ошибка',
+            error.error.message || error.message
+          );
         },
       };
-      this.authService.register(this.registrationForm.value).subscribe(observer);
+      this.authService
+        .register(this.registrationForm.value)
+        .subscribe(observer);
     } else {
       Object.values(this.registrationForm.controls).forEach((control) => {
         if (control.invalid) {

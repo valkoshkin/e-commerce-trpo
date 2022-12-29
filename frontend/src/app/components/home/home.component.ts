@@ -69,7 +69,7 @@ export class HomeComponent implements OnInit {
       },
       error: (error: HttpErrorResponse) => {
         this.categoriesLoading = false;
-        this.notification.error('Ошибка', error.error);
+        this.notification.error('Ошибка', error.error.message || error.message);
       },
     };
     this.productsService.fetchCategories().subscribe(observer);
@@ -84,7 +84,7 @@ export class HomeComponent implements OnInit {
       },
       error: (error: HttpErrorResponse) => {
         this.productsLoading = false;
-        this.notification.error('Ошибка', error.error);
+        this.notification.error('Ошибка', error.error.message || error.message);
       },
     };
     this.productsService.fetchProducts(categories).subscribe(observer);
@@ -102,7 +102,7 @@ export class HomeComponent implements OnInit {
       },
       error: (error: HttpErrorResponse) => {
         this.addDialogLoading = false;
-        this.notification.error('Ошибка', error.error);
+        this.notification.error('Ошибка', error.error.message || error.message);
       },
     };
 
@@ -116,7 +116,7 @@ export class HomeComponent implements OnInit {
         this.favorites = response.favorites;
       },
       error: (error: HttpErrorResponse) => {
-        this.notification.error('Ошибка', error.error);
+        this.notification.error('Ошибка', error.error.message || error.message);
       },
     };
 
@@ -151,7 +151,7 @@ export class HomeComponent implements OnInit {
         }
       },
       error: (error: HttpErrorResponse) => {
-        this.notification.error('Ошибка', error.error);
+        this.notification.error('Ошибка', error.error.message || error.message);
       },
     };
     const username = this.tokenStorage.getUser()!.username;
@@ -171,7 +171,7 @@ export class HomeComponent implements OnInit {
         this.notification.success('Операция выполнена', response.message);
       },
       error: (error: HttpErrorResponse) => {
-        this.notification.error('Ошибка', error.error);
+        this.notification.error('Ошибка', error.error.message || error.message);
       },
     };
     const username = this.tokenStorage.getUser()!.username;

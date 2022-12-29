@@ -2,12 +2,16 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { SERVER_ORIGIN } from '../../common/constants';
 import { Observable } from 'rxjs';
-import { LoginPayload, RegisterPayload } from '../../common/types';
+import {
+  LoginPayload,
+  MessageWrapper,
+  RegisterPayload,
+} from '../../common/types';
 
 const API_URL = '/api/v1/auth';
 const requestOptions = {
   headers: new HttpHeaders({
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
   }),
 };
 
@@ -27,11 +31,11 @@ export class AuthService {
 
   logout() {}
 
-  register(payload: RegisterPayload): Observable<Object> {
+  register(payload: RegisterPayload): Observable<MessageWrapper> {
     return this.http.post(
       `${SERVER_ORIGIN}${API_URL}/register`,
       payload,
       requestOptions
-    );
+    ) as Observable<MessageWrapper>;
   }
 }
