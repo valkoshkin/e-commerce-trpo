@@ -3,14 +3,22 @@ package com.valkoshkin.ecommerce.controllers;
 import com.valkoshkin.ecommerce.dto.AddToCartResponseDto;
 import com.valkoshkin.ecommerce.dto.AddToFavoritesResponseDto;
 import com.valkoshkin.ecommerce.dto.LinkedProductsDto;
+import com.valkoshkin.ecommerce.dto.MessageDto;
+import com.valkoshkin.ecommerce.dto.order.CreateOrderDto;
+import com.valkoshkin.ecommerce.dto.order.OrderDto;
 import com.valkoshkin.ecommerce.dto.product.ProductDto;
+import com.valkoshkin.ecommerce.dto.user.UserDto;
+import com.valkoshkin.ecommerce.entities.Order;
 import com.valkoshkin.ecommerce.entities.Product;
 import com.valkoshkin.ecommerce.entities.User;
+import com.valkoshkin.ecommerce.services.order.OrderService;
 import com.valkoshkin.ecommerce.services.product.ProductService;
 import com.valkoshkin.ecommerce.services.user.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
@@ -19,6 +27,29 @@ import java.util.stream.Collectors;
 public class UserController {
     private final UserService userService;
     private final ProductService productService;
+    private final OrderService orderService;
+
+    @GetMapping("/{username}")
+    public UserDto getUserByUsername(@PathVariable String username) {
+        return UserDto.fromUser(userService.getUserByUsername(username));
+    }
+
+    @GetMapping("/{username}/orders")
+    public List<OrderDto> getUserOrders(@PathVariable String username) {
+        User user = userService.getUserByUsername(username);
+        return user.getOrders().stream().map(OrderDto::fromOrder).toList();
+    }
+
+    @PostMapping("/{username}/orders")
+    public ResponseEntity<?> createOrder(@PathVariable String username, @RequestBody CreateOrderDto createOrderDto) {
+        User user = userService.getUserByUsername(username);
+        List<Product> orderedProducts = List.copyOf(user.getCart());
+        Order order = new Order(createOrderDto.getTimestamp(), user, orderedProducts);
+        orderService.save(order);
+        user.getCart().clear();
+        userService.save(user);
+        return ResponseEntity.ok(new MessageDto("Заказ успешно создан"));
+    }
 
     @PostMapping("/{username}/cart")
     public AddToCartResponseDto addToCart(@PathVariable String username, @RequestBody Long productId) {

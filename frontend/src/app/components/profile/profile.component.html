@@ -1,4 +1,4 @@
-<nz-spin [nzSpinning]="loading">
+<nz-spin [nzSpinning]="loading || ordersLoading">
   <div class="profile__container">
     <div class="profile__card">
       <nz-ribbon *ngIf="!!user && isAdmin" nzText="Admin" nzColor="volcano">
@@ -22,11 +22,11 @@
               {{order.price}} ₽
             </nz-list-item-meta-title>
             <nz-list-item-meta-description>
-              {{ order.date }}
+              {{ buildDate(order.timestamp) }}
             </nz-list-item-meta-description>
           </nz-list-item-meta>
-          <ul>
-            <li *ngFor="let product of order.products">
+          <ul class="profile__orders-list">
+            <li *ngFor="let product of order.orderedProducts">
               <a routerLink="/product" [queryParams]="{id: product.productId}">{{product.name}} </a>
               <span>({{product.price}} ₽)</span>
             </li>

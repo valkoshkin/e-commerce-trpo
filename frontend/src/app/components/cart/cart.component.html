@@ -33,7 +33,9 @@
         </nz-list-item>
       </nz-list>
       <div>
-        <button *ngIf="cart.length" nz-button nzType="primary">Оформить заказ</button>
+        <button *ngIf="cart.length" nz-button nzType="primary" (click)="onCreateButtonClick()"
+                [nzLoading]="createButtonLoading">Оформить заказ
+        </button>
       </div>
     </div>
   </div>

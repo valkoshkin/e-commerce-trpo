@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { Order, Role, User } from '../../common/types';
+import { Order, Role, User, UserData } from '../../common/types';
 import { TokenStorageService } from '../../services/token-storage/token-storage.service';
+import { UserService } from '../../services/user/user.service';
+import { Observer } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 @Component({
   selector: 'app-profile',
@@ -8,68 +12,61 @@ import { TokenStorageService } from '../../services/token-storage/token-storage.
   styleUrls: ['./profile.component.scss'],
 })
 export class ProfileComponent implements OnInit {
-  user: User | null | undefined;
-
-  loading: boolean = true;
-
-  isAdmin: boolean = false;
+  user: UserData | undefined;
 
   orders: Order[] = [];
 
-  constructor(private tokenStorage: TokenStorageService) {} // + profile service
+  loading: boolean = false;
+
+  ordersLoading: boolean = false;
+
+  isAdmin: boolean = false;
+
+  constructor(
+    private tokenStorage: TokenStorageService,
+    private userService: UserService,
+    private notification: NzNotificationService
+  ) {}
+
+  private fetchUserData(username: string) {
+    this.loading = true;
+    const observer: Partial<Observer<UserData>> = {
+      next: (response: UserData) => {
+        this.user = response;
+        this.loading = false;
+      },
+      error: (error: HttpErrorResponse) => {
+        this.loading = false;
+        this.notification.error('Ошибка', error.error.message || error.message);
+      },
+    };
+    this.userService.fetchUserData(username).subscribe(observer);
+  }
+
+  private fetchOrders(username: string) {
+    this.ordersLoading = true;
+    const observer: Partial<Observer<Order[]>> = {
+      next: (response: Order[]) => {
+        this.orders = response;
+        this.ordersLoading = false;
+      },
+      error: (error: HttpErrorResponse) => {
+        this.ordersLoading = false;
+        this.notification.error('Ошибка', error.error.message || error.message);
+      },
+    };
+    this.userService.fetchOrders(username).subscribe(observer);
+  }
 
   ngOnInit(): void {
-    setTimeout(() => {
-      this.loading = false;
+    const userFromStorage = this.tokenStorage.getUser() as User;
 
-      this.user = this.tokenStorage.getUser(); // temp hack
-      this.isAdmin = this.user?.role === Role.ADMIN;
-      this.orders = [
-        {
-          orderId: 1,
-          user: this.user!,
-          date: 'now',
-          price: 151780,
-          products: [
-            {
-              productId: 1,
-              price: 94990,
-              name: 'Huawei Matebook D16',
-              description: 'Ноутбук рабочий не сломанный',
-              category: 'Ноутбуки',
-            },
-            {
-              productId: 2,
-              price: 56780,
-              name: 'Huawei Matebook D14',
-              description: 'Ноутбук сломанный',
-              category: 'Ноутбуки',
-            },
-          ],
-        },
-        {
-          orderId: 2,
-          user: this.user!,
-          date: 'now',
-          price: 151780,
-          products: [
-            {
-              productId: 1,
-              price: 94990,
-              name: 'Huawei Matebook D16',
-              description: 'Ноутбук рабочий не сломанный',
-              category: 'Ноутбуки',
-            },
-            {
-              productId: 2,
-              price: 56780,
-              name: 'Huawei Matebook D14',
-              description: 'Ноутбук сломанный',
-              category: 'Ноутбуки',
-            },
-          ],
-        },
-      ];
-    }, 1000);
+    this.isAdmin = userFromStorage.role === Role.ADMIN;
+    this.fetchUserData(userFromStorage.username);
+    this.fetchOrders(userFromStorage.username);
+  }
+
+  buildDate(timestamp: number): string {
+    return new Date(timestamp).toLocaleDateString("ru-ru");
   }
 }

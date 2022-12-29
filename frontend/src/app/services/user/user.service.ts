@@ -4,7 +4,12 @@ import { Observable } from 'rxjs';
 import {
   AddToCartResponse,
   AddToFavoritesResponse,
+  CreateOrderPayload,
   LinkedProducts,
+  MessageWrapper,
+  Order,
+  User,
+  UserData,
 } from '../../common/types';
 
 const API_PREFIX = '/api/v1';
@@ -39,5 +44,27 @@ export class UserService {
     return this.http.get(
       `${API_PREFIX}/user/${username}/linked-products`
     ) as Observable<LinkedProducts>;
+  }
+
+  createOrder(
+    username: string,
+    payload: CreateOrderPayload
+  ): Observable<MessageWrapper> {
+    return this.http.post(
+      `${API_PREFIX}/user/${username}/orders`,
+      payload
+    ) as Observable<MessageWrapper>;
+  }
+
+  fetchUserData(username: string): Observable<UserData> {
+    return this.http.get(
+      `${API_PREFIX}/user/${username}`
+    ) as Observable<UserData>;
+  }
+
+  fetchOrders(username: string): Observable<Order[]> {
+    return this.http.get(`${API_PREFIX}/user/${username}/orders`) as Observable<
+      Order[]
+    >;
   }
 }

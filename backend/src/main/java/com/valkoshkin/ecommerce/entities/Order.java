@@ -1,6 +1,7 @@
 package com.valkoshkin.ecommerce.entities;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
@@ -13,6 +14,7 @@ import java.util.List;
 @Accessors(chain = true)
 @Entity
 @Table(name = "orders")
+@NoArgsConstructor
 public class Order {
 
     @Id
@@ -20,8 +22,8 @@ public class Order {
     @Column(name = "order_id")
     private Long orderId;
 
-    @Column(name = "date")
-    private Date date;
+    @Column(name = "timestamp")
+    private Long timestamp;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -34,8 +36,14 @@ public class Order {
             inverseJoinColumns = { @JoinColumn(name = "product_id") })
     private List<Product> orderedProducts;
 
+    public Order(Long timestamp, User user, List<Product> orderedProducts) {
+        this.timestamp = timestamp;
+        this.user = user;
+        this.orderedProducts = orderedProducts;
+    }
+
     public String toString() {
-        return String.format("Order {\norderId=%d,\ndate=%s,\nuser=%s\n}",
-                orderId, date.toString(), user.toString());
+        return String.format("Order {\norderId=%d,\ntimestamp=%d,\nuser=%s\n}",
+                orderId, timestamp, user.toString());
     }
 }

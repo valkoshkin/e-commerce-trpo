@@ -25,6 +25,15 @@ export interface User extends Omit<RegisterPayload, 'password'> {
   token: string;
 }
 
+export interface UserData {
+  userId: number;
+  username: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  address: string;
+}
+
 export interface Product {
   productId: number;
   name: string;
@@ -59,9 +68,13 @@ export interface CreateReviewPayload
 export interface Order {
   orderId: number;
   user: User;
-  date: string;
-  products: Product[];
+  timestamp: number;
+  orderedProducts: Product[];
   price: number;
+}
+
+export interface CreateOrderPayload {
+  timestamp: number;
 }
 
 export interface AddToCartResponse {
