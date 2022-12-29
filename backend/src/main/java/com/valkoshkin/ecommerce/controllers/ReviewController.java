@@ -10,6 +10,7 @@ import com.valkoshkin.ecommerce.services.review.ReviewService;
 import com.valkoshkin.ecommerce.services.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +23,7 @@ public class ReviewController {
     private final UserService userService;
     private final ProductService productService;
     private final ReviewService reviewService;
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @PostMapping("/create")
     public ResponseEntity<?> createReview(@RequestBody CreateReviewDto createReviewDto) {
         User user = userService.getUserByUsername(createReviewDto.getUsername());

@@ -16,6 +16,7 @@ import com.valkoshkin.ecommerce.services.product.ProductService;
 import com.valkoshkin.ecommerce.services.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,17 +30,20 @@ public class UserController {
     private final ProductService productService;
     private final OrderService orderService;
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping("/{username}")
     public UserDto getUserByUsername(@PathVariable String username) {
         return UserDto.fromUser(userService.getUserByUsername(username));
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping("/{username}/orders")
     public List<OrderDto> getUserOrders(@PathVariable String username) {
         User user = userService.getUserByUsername(username);
         return user.getOrders().stream().map(OrderDto::fromOrder).toList();
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @PostMapping("/{username}/orders")
     public ResponseEntity<?> createOrder(@PathVariable String username, @RequestBody CreateOrderDto createOrderDto) {
         User user = userService.getUserByUsername(username);
@@ -51,6 +55,7 @@ public class UserController {
         return ResponseEntity.ok(new MessageDto("Заказ успешно создан"));
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @PostMapping("/{username}/cart")
     public AddToCartResponseDto addToCart(@PathVariable String username, @RequestBody Long productId) {
         User user = userService.getUserByUsername(username);
@@ -74,6 +79,7 @@ public class UserController {
                 .stream().map(ProductDto::fromProduct).collect(Collectors.toList()));
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @PostMapping("/{username}/favorites")
     public AddToFavoritesResponseDto addToFavorites(@PathVariable String username, @RequestBody Long productId) {
         User user = userService.getUserByUsername(username);
@@ -89,6 +95,7 @@ public class UserController {
         return new AddToFavoritesResponseDto(user.getLikedProducts().stream().map(ProductDto::fromProduct).collect(Collectors.toList()));
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping("/{username}/linked-products")
     public LinkedProductsDto getLinkedProducts(@PathVariable String username) {
         User user = userService.getUserByUsername(username);

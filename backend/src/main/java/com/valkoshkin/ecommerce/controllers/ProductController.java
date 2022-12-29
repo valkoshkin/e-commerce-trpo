@@ -11,6 +11,7 @@ import com.valkoshkin.ecommerce.services.category.CategoryService;
 import com.valkoshkin.ecommerce.services.product.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -39,6 +40,7 @@ public class ProductController {
         return product.getReviews().stream().map(ReviewDto::fromReview).collect(Collectors.toList());
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/create")
     public ResponseEntity<?> createProduct(@RequestBody CreateProductDto createProductDto) {
         Category category = categoryService.getCategoryByName(createProductDto.getCategory());
@@ -48,12 +50,13 @@ public class ProductController {
         return ResponseEntity.ok(new MessageDto("Товар успешно добавлен"));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteProduct(@PathVariable Long id) {
         productService.deleteProductById(id);
         return ResponseEntity.ok(new MessageDto("Товар успешно удален"));
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/{id}")
     public ProductDto editProduct(@PathVariable Long id, @RequestBody EditProductDto editProductDto) {
         Product product = productService.getProductById(id);
