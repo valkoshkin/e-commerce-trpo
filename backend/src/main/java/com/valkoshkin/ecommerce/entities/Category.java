@@ -1,7 +1,6 @@
 package com.valkoshkin.ecommerce.entities;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
@@ -12,6 +11,7 @@ import java.util.List;
 @Accessors(chain = true)
 @Entity
 @Table(name = "categories")
+@NoArgsConstructor
 public class Category {
 
     @Id
@@ -25,6 +25,11 @@ public class Category {
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private List<Product> products;
+
+    public Category(Long categoryId, String name) {
+        this.categoryId = categoryId;
+        this.name = name;
+    }
 
     public String toString() {
         return String.format("Category {\ncategoryId=%d,\nname=%s\n}", categoryId, name);

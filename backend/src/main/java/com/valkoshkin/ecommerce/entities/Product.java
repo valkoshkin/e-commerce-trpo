@@ -54,6 +54,14 @@ public class Product {
         this.category = category;
     }
 
+    public Product(Long productId, String name, String description, double price, Category category) {
+        this.productId = productId;
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.category = category;
+    }
+
     public String toString() {
         return String.format("Product {\nproductId=%d,\nname=%s,\ndescription=%s,\nprice=%f,\ncategory=%s\n}",
                 productId, name, description, price, category.toString());

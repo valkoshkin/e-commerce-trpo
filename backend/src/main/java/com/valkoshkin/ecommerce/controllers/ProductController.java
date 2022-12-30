@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,8 +31,15 @@ public class ProductController {
     }
 
     @GetMapping(path = "/{id}")
-    public ProductDto getProduct(@PathVariable Long id) {
-        return ProductDto.fromProduct(productService.getProductById(id));
+    public ResponseEntity<?> getProduct(@PathVariable Long id) {
+        try {
+            ProductDto result = ProductDto.fromProduct(productService.getProductById(id));
+            return ResponseEntity.ok(result);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @GetMapping(path = "/{productId}/reviews")
